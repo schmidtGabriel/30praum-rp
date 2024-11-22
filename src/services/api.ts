@@ -18,24 +18,185 @@ const STORAGE_KEYS = {
   SUBPROJECTS: 'subprojects',
 };
 
-// Initialize default admin user if none exists
-const initializeDefaultUser = () => {
-  const users = localStorage.getItem(STORAGE_KEYS.USERS);
-  if (!users || JSON.parse(users).length === 0) {
-    const defaultUser: User = {
+// Mock data initialization
+const initializeMockData = () => {
+  // Mock Artists
+  const artists: Artist[] = [
+    {
+      id: '1',
+      name: 'John Doe',
+      bio: 'Electronic music producer from São Paulo',
+    },
+    {
+      id: '2',
+      name: 'Maria Silva',
+      bio: 'Singer-songwriter with a unique voice',
+    },
+    {
+      id: '3',
+      name: 'The Groove Band',
+      bio: 'Alternative rock band from Rio de Janeiro',
+    },
+  ];
+
+  // Mock Tracks
+  const tracks: Track[] = [
+    {
+      id: '1',
+      title: 'Summer Nights',
+      artistId: '1',
+      releaseDate: '2024-03-15',
+      duration: '3:45',
+      expectationDailyPlays: 5000,
+    },
+    {
+      id: '2',
+      title: 'Midnight Dreams',
+      artistId: '1',
+      releaseDate: '2024-03-20',
+      duration: '4:12',
+      expectationDailyPlays: 3500,
+    },
+    {
+      id: '3',
+      title: 'Amor e Paz',
+      artistId: '2',
+      releaseDate: '2024-02-28',
+      duration: '3:30',
+      expectationDailyPlays: 7500,
+    },
+  ];
+
+  // Mock Projects
+  const projects: Project[] = [
+    {
+      id: '1',
+      title: 'Electronic Dreams EP',
+      artistId: '1',
+      releaseDate: '2024-04-01',
+      type: 'EP',
+    },
+    {
+      id: '2',
+      title: 'Acoustic Sessions',
+      artistId: '2',
+      releaseDate: '2024-05-15',
+      type: 'Album',
+    },
+  ];
+
+  // Mock Distributors
+  const distributors: Distributor[] = [
+    {
+      id: '1',
+      name: 'Global Music',
+      percentage: 15,
+    },
+    {
+      id: '2',
+      name: 'Digital Streams',
+      percentage: 12,
+    },
+    {
+      id: '3',
+      name: 'Music Plus',
+      percentage: 18,
+    },
+  ];
+
+  // Mock Catalogs
+  const catalogs: Catalog[] = [
+    {
+      id: '1',
+      artistId: '1',
+      distributorId: '1',
+      playExpectation: 8500,
+      percentage: 15,
+      trackIds: ['1', '2'],
+    },
+    {
+      id: '2',
+      artistId: '2',
+      distributorId: '2',
+      playExpectation: 7500,
+      percentage: 12,
+      trackIds: ['3'],
+    },
+  ];
+
+  // Mock SubProjects
+  const subProjects: SubProject[] = [
+    {
+      id: '1',
+      projectId: '1',
+      title: 'Studio Recording',
+      type: 'Recording',
+      cost: 5000,
+    },
+    {
+      id: '2',
+      projectId: '1',
+      title: 'Music Video',
+      type: 'Video',
+      cost: 8000,
+    },
+    {
+      id: '3',
+      projectId: '2',
+      title: 'Marketing Campaign',
+      type: 'Marketing',
+      cost: 3500,
+    },
+  ];
+
+  // Initialize default admin user if none exists
+  const users: User[] = [
+    {
       id: '1',
       name: 'Admin 30praum',
       email: 'admin@30praum.com',
-      password: 'admin123', // In a real app, this should be hashed
+      password: 'admin123',
       role: 'admin',
       status: 'active',
       lastLogin: new Date().toISOString(),
-    };
-    localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify([defaultUser]));
+    },
+    {
+      id: '2',
+      name: 'John Manager',
+      email: 'john@30praum.com',
+      password: 'john123',
+      role: 'admin',
+      status: 'active',
+      lastLogin: new Date().toISOString(),
+    },
+  ];
+
+  // Only initialize if data doesn't exist
+  if (!localStorage.getItem(STORAGE_KEYS.ARTISTS)) {
+    localStorage.setItem(STORAGE_KEYS.ARTISTS, JSON.stringify(artists));
+  }
+  if (!localStorage.getItem(STORAGE_KEYS.TRACKS)) {
+    localStorage.setItem(STORAGE_KEYS.TRACKS, JSON.stringify(tracks));
+  }
+  if (!localStorage.getItem(STORAGE_KEYS.PROJECTS)) {
+    localStorage.setItem(STORAGE_KEYS.PROJECTS, JSON.stringify(projects));
+  }
+  if (!localStorage.getItem(STORAGE_KEYS.DISTRIBUTORS)) {
+    localStorage.setItem(STORAGE_KEYS.DISTRIBUTORS, JSON.stringify(distributors));
+  }
+  if (!localStorage.getItem(STORAGE_KEYS.CATALOGS)) {
+    localStorage.setItem(STORAGE_KEYS.CATALOGS, JSON.stringify(catalogs));
+  }
+  if (!localStorage.getItem(STORAGE_KEYS.SUBPROJECTS)) {
+    localStorage.setItem(STORAGE_KEYS.SUBPROJECTS, JSON.stringify(subProjects));
+  }
+  if (!localStorage.getItem(STORAGE_KEYS.USERS)) {
+    localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));
   }
 };
 
-initializeDefaultUser();
+// Initialize mock data
+initializeMockData();
 
 // Generic CRUD service
 class BaseService<T extends { id: string }> {
