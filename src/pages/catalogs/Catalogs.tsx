@@ -1,13 +1,13 @@
-import { Loader2 } from "lucide-react";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import DataTable from "../../components/DataTable";
-import Modal from "../../components/Modal";
-import { useArtists } from "../../hooks/useArtists";
-import { useCatalogs } from "../../hooks/useCatalogs";
-import { useDistributors } from "../../hooks/useDistributors";
-import { Catalog } from "../../types";
-import CatalogForm from "./CatalogForm";
+import React, { useState } from 'react';
+import { Catalog } from '../../types';
+import { useCatalogs } from '../../hooks/useCatalogs';
+import { useArtists } from '../../hooks/useArtists';
+import { useDistributors } from '../../hooks/useDistributors';
+import DataTable from '../../components/DataTable';
+import Modal from '../../components/Modal';
+import CatalogForm from './CatalogForm';
+import { Loader2, Eye, Edit, Trash2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const Catalogs = () => {
   const {
@@ -26,29 +26,29 @@ const Catalogs = () => {
 
   const columns = [
     {
-      key: "artistId",
-      label: "Artist",
+      key: 'artistId',
+      label: 'Artista',
       render: (value: string) =>
-        artists.find((a) => a.id === value)?.name || "Desconhecido",
+        artists.find((a) => a.id === value)?.name || 'Desconhecido',
     },
     {
-      key: "distributor",
-      label: "Distributor",
+      key: 'distributor',
+      label: 'Distribuidor',
       render: (_: any, item: Catalog) =>
         distributors.find((p) => p.id === item.distributorId)?.name ||
-        "Desconhecido",
+        'Desconhecido',
     },
     {
-      key: "percentage",
-      label: "Percentage",
+      key: 'percentage',
+      label: 'Porcentagem',
       render: (_: any, item: Catalog) =>
         `${
           distributors.find((p) => p.id === item.distributorId)?.percentage ?? 0
         }%`,
     },
     {
-      key: "playExpectation",
-      label: "Expected Plays",
+      key: 'playExpectation',
+      label: 'Reproduções Esperadas',
       render: (value: number) => value.toLocaleString(),
     },
   ];
@@ -68,12 +68,12 @@ const Catalogs = () => {
   };
 
   const handleDelete = async (catalog: Catalog) => {
-    if (window.confirm("Tem certeza que deseja excluir este catálogo?")) {
+    if (window.confirm('Tem certeza que deseja excluir este catálogo?')) {
       await deleteCatalog(catalog.id);
     }
   };
 
-  const handleSubmit = async (data: Omit<Catalog, "id">) => {
+  const handleSubmit = async (data: Omit<Catalog, 'id'>) => {
     try {
       if (selectedCatalog) {
         await updateCatalog(selectedCatalog.id, data);
@@ -82,7 +82,7 @@ const Catalogs = () => {
       }
       setIsModalOpen(false);
     } catch (error) {
-      console.error("Falha ao salvar catálogo:", error);
+      console.error('Falha ao salvar catálogo:', error);
     }
   };
 
@@ -115,7 +115,7 @@ const Catalogs = () => {
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        title={selectedCatalog ? "Editar Catálogo" : "Adicionar Catálogo"}
+        title={selectedCatalog ? 'Editar Catálogo' : 'Adicionar Catálogo'}
       >
         <CatalogForm
           catalog={selectedCatalog}

@@ -55,11 +55,11 @@ const DashboardLayout = () => {
     {
       title: 'Projeções',
       items: [
-        { icon: DollarSign, text: 'Faturamento', path: '#' },
+        { icon: DollarSign, text: 'Faturamento', path: '/revenue-projections' },
         { icon: LineChart, text: 'Custos', path: '#' },
-        { icon: Library, text: 'Catálogo', path: '#' },
-        { icon: Mic2, text: 'Shows', path: '#' },
-        { icon: FolderKanban, text: 'Projetos', path: '#' },
+        { icon: Library, text: 'Catálogo', path: '/catalog-projections' },
+        { icon: Mic2, text: 'Shows', path: '/concert-projections' },
+        { icon: FolderKanban, text: 'Projetos', path: '/project-projections' },
       ],
     },
     {
@@ -126,7 +126,7 @@ const DashboardLayout = () => {
               <div className="h-10 w-10 overflow-hidden rounded-full bg-slate-200">
                 <img
                   src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                  alt="Perfil"
+                  alt="Profile"
                   className="h-full w-full object-cover"
                 />
               </div>

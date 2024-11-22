@@ -1,56 +1,49 @@
 import React, { useState, useEffect } from 'react';
-import { SubProject } from '../../types';
+import { SubProjectItem } from '../../types';
 import SaveButton from '../../components/SaveButton';
 import CancelButton from '../../components/CancelButton';
 
-interface SubProjectFormProps {
-  subProject?: SubProject | null;
-  onSubmit: (data: Omit<SubProject, 'id'>) => void;
+interface SubProjectItemFormProps {
+  item?: SubProjectItem | null;
+  subprojectId: string;
+  onSubmit: (data: Omit<SubProjectItem, 'id'>) => void;
   onCancel: () => void;
-  projectId: string;
 }
 
-const SubProjectForm: React.FC<SubProjectFormProps> = ({
-  subProject,
+const SubProjectItemForm: React.FC<SubProjectItemFormProps> = ({
+  item,
+  subprojectId,
   onSubmit,
   onCancel,
-  projectId,
 }) => {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
-    budget: '',
-    cost: '0',
-    projectId: projectId,
+    cost: 0,
+    subprojectId: subprojectId,
   });
 
   useEffect(() => {
-    if (subProject) {
+    if (item) {
       setFormData({
-        title: subProject.title,
-        description: subProject.description || '',
-        budget: subProject.budget?.toString() || '',
-        cost: subProject.cost?.toString() || '0',
-        projectId: subProject.projectId,
+        title: item.title,
+        description: item.description,
+        cost: item.cost,
+        subprojectId: item.subprojectId,
       });
     } else {
       setFormData({
         title: '',
         description: '',
-        budget: '',
-        cost: '0',
-        projectId: projectId,
+        cost: 0,
+        subprojectId: subprojectId,
       });
     }
-  }, [subProject, projectId]);
+  }, [item, subprojectId]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit({
-      ...formData,
-      budget: parseFloat(formData.budget) || undefined,
-      cost: parseFloat(formData.cost) || 0,
-    });
+    onSubmit(formData);
   };
 
   return (
@@ -84,28 +77,7 @@ const SubProjectForm: React.FC<SubProjectFormProps> = ({
 
       <div>
         <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
-          Budget (Optional)
-        </label>
-        <div className="relative mt-1 rounded-md shadow-sm">
-          <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-            <span className="text-slate-500 dark:text-slate-400 sm:text-sm">
-              $
-            </span>
-          </div>
-          <input
-            type="number"
-            value={formData.budget}
-            onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
-            min="0"
-            step="0.01"
-            className="block w-full rounded-md border border-slate-300 pl-7 pr-12 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500 dark:border-slate-600 dark:bg-slate-700 dark:text-white"
-          />
-        </div>
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
-          Cost (Calculated from Items)
+          Cost
         </label>
         <div className="relative mt-1 rounded-md shadow-sm">
           <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
@@ -116,13 +88,15 @@ const SubProjectForm: React.FC<SubProjectFormProps> = ({
           <input
             type="number"
             value={formData.cost}
-            disabled
-            className="block w-full rounded-md border border-slate-300 bg-slate-50 pl-7 pr-12 py-2 text-sm text-slate-500 dark:border-slate-600 dark:bg-slate-700/50 dark:text-slate-400"
+            onChange={(e) =>
+              setFormData({ ...formData, cost: parseFloat(e.target.value) })
+            }
+            min="0"
+            step="0.01"
+            className="block w-full rounded-md border border-slate-300 pl-7 pr-12 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500 dark:border-slate-600 dark:bg-slate-700 dark:text-white"
+            required
           />
         </div>
-        <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-          This value is automatically calculated from the sum of all items
-        </p>
       </div>
 
       <div className="flex justify-end gap-3">
@@ -133,4 +107,4 @@ const SubProjectForm: React.FC<SubProjectFormProps> = ({
   );
 };
 
-export default SubProjectForm;
+export default SubProjectItemForm;

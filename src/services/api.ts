@@ -6,6 +6,10 @@ import {
   Project,
   Distributor,
   SubProject,
+  SubProjectItem,
+  CatalogProjection,
+  ProjectProjection,
+  ConcertProjection,
 } from '../types';
 
 const STORAGE_KEYS = {
@@ -16,10 +20,36 @@ const STORAGE_KEYS = {
   PROJECTS: 'projects',
   DISTRIBUTORS: 'distributors',
   SUBPROJECTS: 'subprojects',
+  SUBPROJECT_ITEMS: 'subProjectItems',
+  CATALOG_PROJECTIONS: 'catalogProjections',
+  PROJECT_PROJECTIONS: 'projectProjections',
+  CONCERT_PROJECTIONS: 'concertProjections',
 };
 
 // Mock data initialization
 const initializeMockData = () => {
+  // Mock Users
+  const users: User[] = [
+    {
+      id: '1',
+      name: 'Admin 30praum',
+      email: 'admin@30praum.com',
+      password: 'admin123',
+      role: 'admin',
+      status: 'active',
+      lastLogin: new Date().toISOString(),
+    },
+    {
+      id: '2',
+      name: 'John Manager',
+      email: 'john@30praum.com',
+      password: 'john123',
+      role: 'admin',
+      status: 'active',
+      lastLogin: new Date().toISOString(),
+    },
+  ];
+
   // Mock Artists
   const artists: Artist[] = [
     {
@@ -75,6 +105,9 @@ const initializeMockData = () => {
       artistId: '1',
       releaseDate: '2024-04-01',
       type: 'EP',
+      description: 'A collection of electronic tracks',
+      budget: 10000,
+      cost: 8500,
     },
     {
       id: '2',
@@ -82,6 +115,9 @@ const initializeMockData = () => {
       artistId: '2',
       releaseDate: '2024-05-15',
       type: 'Album',
+      description: 'Live acoustic recordings',
+      budget: 15000,
+      cost: 12000,
     },
   ];
 
@@ -130,48 +166,119 @@ const initializeMockData = () => {
       id: '1',
       projectId: '1',
       title: 'Studio Recording',
-      type: 'Recording',
+      description: 'Professional studio recording session',
+      budget: 5000,
       cost: 5000,
     },
     {
       id: '2',
       projectId: '1',
       title: 'Music Video',
-      type: 'Video',
+      description: 'Music video production',
+      budget: 8000,
       cost: 8000,
-    },
-    {
-      id: '3',
-      projectId: '2',
-      title: 'Marketing Campaign',
-      type: 'Marketing',
-      cost: 3500,
     },
   ];
 
-  // Initialize default admin user if none exists
-  const users: User[] = [
+  // Mock SubProject Items
+  const subProjectItems: SubProjectItem[] = [
     {
       id: '1',
-      name: 'Admin 30praum',
-      email: 'admin@30praum.com',
-      password: 'admin123',
-      role: 'admin',
-      status: 'active',
-      lastLogin: new Date().toISOString(),
+      subprojectId: '1',
+      title: 'Studio Time',
+      description: 'Recording studio rental - 8 hours',
+      cost: 2000,
     },
     {
       id: '2',
-      name: 'John Manager',
-      email: 'john@30praum.com',
-      password: 'john123',
-      role: 'admin',
-      status: 'active',
-      lastLogin: new Date().toISOString(),
+      subprojectId: '1',
+      title: 'Sound Engineer',
+      description: 'Professional sound engineer services',
+      cost: 1500,
     },
   ];
 
-  // Only initialize if data doesn't exist
+  // Mock Catalog Projections
+  const catalogProjections: CatalogProjection[] = [
+    {
+      id: '1',
+      artistId: '1',
+      catalogId: '1',
+      numberOfTracks: 10,
+      period: 365,
+      dailyPlaysPerTrack: 1000,
+      dailyPlaysPerCatalog: 10000,
+      totalPlays: 3650000,
+      averageValue: 1000,
+      participationPercentage: 60,
+      artistPercentage: 70,
+      companyPercentage: 30,
+      proRata: 20000,
+      profitability: 100000,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+  ];
+
+  // Mock Project Projections
+  const projectProjections: ProjectProjection[] = [
+    {
+      id: '1',
+      year: 2024,
+      projectId: '1',
+      distributorId: '1',
+      numberOfTracks: 5,
+      period: 365,
+      averageDailyPlaysPerTrack: 1000,
+      averageDailyPlaysPerProject: 5000,
+      totalPlays: 1825000,
+      averageValuePerMPlays: 1000,
+      grossRevenue: 1825,
+      distributorPercentage: 15,
+      distributorProfit: 1551.25,
+      participationPercentage: 20,
+      artistPercentage: 40,
+      companyPercentage: 40,
+      proRataUSD: 620.5,
+      proRataBRL: 3412.75,
+      netRevenue12Months: 3412.75,
+      projectBudget: 10000,
+      digitalProfitability: -6587.25,
+      status: 'active',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+  ];
+
+  // Mock Concert Projections
+  const concertProjections: ConcertProjection[] = [
+    {
+      id: '1',
+      title: 'Summer Tour 2024',
+      year: 2024,
+      artistId: '1',
+      showsPerYear: 48,
+      period: 12,
+      averageTicketValue: 50,
+      crewPercentage: 20,
+      artistPercentage: 40,
+      companyPercentage: 40,
+      totalShows: 48,
+      grossRevenue: 120000,
+      crewShare: 24000,
+      artistShare: 48000,
+      companyShare: 48000,
+      description: 'Summer tour across major cities',
+      status: 'active',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+  ];
+
+  // Initialize storage if empty
+  if (!localStorage.getItem(STORAGE_KEYS.USERS)) {
+    localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));
+  }
   if (!localStorage.getItem(STORAGE_KEYS.ARTISTS)) {
     localStorage.setItem(STORAGE_KEYS.ARTISTS, JSON.stringify(artists));
   }
@@ -190,8 +297,29 @@ const initializeMockData = () => {
   if (!localStorage.getItem(STORAGE_KEYS.SUBPROJECTS)) {
     localStorage.setItem(STORAGE_KEYS.SUBPROJECTS, JSON.stringify(subProjects));
   }
-  if (!localStorage.getItem(STORAGE_KEYS.USERS)) {
-    localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));
+  if (!localStorage.getItem(STORAGE_KEYS.SUBPROJECT_ITEMS)) {
+    localStorage.setItem(
+      STORAGE_KEYS.SUBPROJECT_ITEMS,
+      JSON.stringify(subProjectItems)
+    );
+  }
+  if (!localStorage.getItem(STORAGE_KEYS.CATALOG_PROJECTIONS)) {
+    localStorage.setItem(
+      STORAGE_KEYS.CATALOG_PROJECTIONS,
+      JSON.stringify(catalogProjections)
+    );
+  }
+  if (!localStorage.getItem(STORAGE_KEYS.PROJECT_PROJECTIONS)) {
+    localStorage.setItem(
+      STORAGE_KEYS.PROJECT_PROJECTIONS,
+      JSON.stringify(projectProjections)
+    );
+  }
+  if (!localStorage.getItem(STORAGE_KEYS.CONCERT_PROJECTIONS)) {
+    localStorage.setItem(
+      STORAGE_KEYS.CONCERT_PROJECTIONS,
+      JSON.stringify(concertProjections)
+    );
   }
 };
 
@@ -216,7 +344,6 @@ class BaseService<T extends { id: string }> {
   }
 
   async list(): Promise<T[]> {
-    // Simulate API delay
     await new Promise((resolve) => setTimeout(resolve, 300));
     return this.getAll();
   }
@@ -256,10 +383,10 @@ class BaseService<T extends { id: string }> {
   }
 }
 
-// Specific services
+// Export all services
+export const usersService = new BaseService<User>(STORAGE_KEYS.USERS);
 export const artistsService = new BaseService<Artist>(STORAGE_KEYS.ARTISTS);
 export const catalogsService = new BaseService<Catalog>(STORAGE_KEYS.CATALOGS);
-export const usersService = new BaseService<User>(STORAGE_KEYS.USERS);
 export const tracksService = new BaseService<Track>(STORAGE_KEYS.TRACKS);
 export const projectsService = new BaseService<Project>(STORAGE_KEYS.PROJECTS);
 export const distributorsService = new BaseService<Distributor>(
@@ -267,4 +394,16 @@ export const distributorsService = new BaseService<Distributor>(
 );
 export const subProjectsService = new BaseService<SubProject>(
   STORAGE_KEYS.SUBPROJECTS
+);
+export const subProjectItemsService = new BaseService<SubProjectItem>(
+  STORAGE_KEYS.SUBPROJECT_ITEMS
+);
+export const catalogProjectionsService = new BaseService<CatalogProjection>(
+  STORAGE_KEYS.CATALOG_PROJECTIONS
+);
+export const projectProjectionsService = new BaseService<ProjectProjection>(
+  STORAGE_KEYS.PROJECT_PROJECTIONS
+);
+export const concertProjectionsService = new BaseService<ConcertProjection>(
+  STORAGE_KEYS.CONCERT_PROJECTIONS
 );
