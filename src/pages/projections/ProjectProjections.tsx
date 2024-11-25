@@ -58,23 +58,6 @@ const ProjectProjections = () => {
       label: 'Rendimento Digital',
       render: (value: number) => formatCurrency(value, 'Dolar'),
     },
-    {
-      key: 'status',
-      label: 'Status',
-      render: (value: string) => (
-        <span
-          className={`inline-flex rounded-full px-2 text-xs font-semibold leading-5 ${
-            value === 'active'
-              ? 'bg-green-100 text-green-800'
-              : value === 'draft'
-              ? 'bg-yellow-100 text-yellow-800'
-              : 'bg-gray-100 text-gray-800'
-          }`}
-        >
-          {value.charAt(0).toUpperCase() + value.slice(1)}
-        </span>
-      ),
-    },
   ];
 
   const handleAdd = () => {
@@ -191,14 +174,14 @@ const ProjectProjections = () => {
         <div className="flex flex-wrap gap-4">
           <div className="w-48">
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
-              Year
+              Ano
             </label>
             <select
               value={selectedYear}
               onChange={(e) => setSelectedYear(parseInt(e.target.value))}
               className="mt-1 block w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500 dark:border-slate-600 dark:bg-slate-700 dark:text-white"
             >
-              <option value="">All Years</option>
+              <option value="">Todos</option>
               {years.map((year) => (
                 <option key={year} value={year}>
                   {year}
@@ -209,14 +192,14 @@ const ProjectProjections = () => {
 
           <div className="w-48">
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
-              Artist
+              Artista
             </label>
             <select
               value={selectedArtistId}
               onChange={(e) => setSelectedArtistId(e.target.value)}
               className="mt-1 block w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500 dark:border-slate-600 dark:bg-slate-700 dark:text-white"
             >
-              <option value="">All Artists</option>
+              <option value="">Todos Artistas</option>
               {artists.map((artist) => (
                 <option key={artist.id} value={artist.id}>
                   {artist.name}
@@ -234,7 +217,7 @@ const ProjectProjections = () => {
         onEdit={handleEdit}
         onDelete={handleDelete}
         onView={handleView}
-        title="Project Projections"
+        title="Projeção de Projeto"
       />
 
       <Modal
@@ -242,8 +225,8 @@ const ProjectProjections = () => {
         onClose={() => setIsModalOpen(false)}
         title={
           selectedProjection
-            ? 'Edit Project Projection'
-            : 'Add Project Projection'
+            ? 'Editar Projeção de Projeto'
+            : 'Criar Projeção de Projeto'
         }
       >
         <ProjectProjectionForm

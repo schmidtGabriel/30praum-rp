@@ -23,15 +23,15 @@ const Projects = () => {
   const navigate = useNavigate();
 
   const columns = [
-    { key: 'title', label: 'Title' },
+    { key: 'title', label: 'Título' },
     {
       key: 'artistId',
-      label: 'Artist',
+      label: 'Artista',
       render: (value: string) =>
         artists.find((a) => a.id === value)?.name || 'Unknown',
     },
-    { key: 'type', label: 'Type' },
-    { key: 'releaseDate', label: 'Release Date' },
+    { key: 'type', label: 'Tipo' },
+    { key: 'releaseDate', label: 'Data Lançamento' },
   ];
 
   const handleAdd = () => {

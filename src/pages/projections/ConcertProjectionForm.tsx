@@ -88,24 +88,10 @@ const ConcertProjectionForm: React.FC<ConcertProjectionFormProps> = ({
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="grid gap-4 md:grid-cols-2">
-        {/* Title field */}
-        <div className="md:col-span-2">
-          <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
-            Title
-          </label>
-          <input
-            type="text"
-            value={formData.title}
-            onChange={(e) => handleInputChange('title', e.target.value)}
-            className="mt-1 block w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500 dark:border-slate-600 dark:bg-slate-700 dark:text-white"
-            required
-          />
-        </div>
-
         {/* Year field */}
         <div>
           <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
-            Year
+            Ano
           </label>
           <input
             type="number"
@@ -125,7 +111,7 @@ const ConcertProjectionForm: React.FC<ConcertProjectionFormProps> = ({
         {/* Artist field */}
         <div>
           <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
-            Artist
+            Artista
           </label>
           <select
             value={formData.artistId}
@@ -133,7 +119,7 @@ const ConcertProjectionForm: React.FC<ConcertProjectionFormProps> = ({
             className="mt-1 block w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500 dark:border-slate-600 dark:bg-slate-700 dark:text-white"
             required
           >
-            <option value="">Select an artist</option>
+            <option value="">Selecione um artista</option>
             {artists.map((artist) => (
               <option key={artist.id} value={artist.id}>
                 {artist.name}
@@ -145,7 +131,7 @@ const ConcertProjectionForm: React.FC<ConcertProjectionFormProps> = ({
         {/* Shows per Month field */}
         <div>
           <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
-            Shows per Month
+            Shows por Mês
           </label>
           <input
             type="number"
@@ -162,7 +148,7 @@ const ConcertProjectionForm: React.FC<ConcertProjectionFormProps> = ({
         {/* Period field */}
         <div>
           <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
-            Period (months)
+            Periodo (meses)
           </label>
           <input
             type="number"
@@ -180,7 +166,7 @@ const ConcertProjectionForm: React.FC<ConcertProjectionFormProps> = ({
         {/* Average Ticket Value field */}
         <div>
           <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
-            Average Ticket Value
+            Valor Médio do Show
           </label>
           <div className="relative mt-1 rounded-md shadow-sm">
             <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
@@ -205,7 +191,7 @@ const ConcertProjectionForm: React.FC<ConcertProjectionFormProps> = ({
         {/* Crew Percentage field */}
         <div>
           <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
-            Crew Percentage
+            Porcentagem da Equipe
           </label>
           <div className="relative mt-1 rounded-md shadow-sm">
             <input
@@ -220,7 +206,7 @@ const ConcertProjectionForm: React.FC<ConcertProjectionFormProps> = ({
                   parseFloat(e.target.value) || 0
                 )
               }
-              className="block w-full rounded-md border border-slate-300 pr-12 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500 dark:border-slate-600 dark:bg-slate-700 dark:text-white"
+              className="block w-full rounded-md border border-slate-300 pl-4 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500 dark:border-slate-600 dark:bg-slate-700 dark:text-white"
               required
             />
             <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
@@ -232,7 +218,7 @@ const ConcertProjectionForm: React.FC<ConcertProjectionFormProps> = ({
         {/* Artist Percentage field */}
         <div>
           <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
-            Artist Percentage
+            Porcentagem do Artista
           </label>
           <div className="relative mt-1 rounded-md shadow-sm">
             <input
@@ -247,7 +233,7 @@ const ConcertProjectionForm: React.FC<ConcertProjectionFormProps> = ({
                   parseFloat(e.target.value) || 0
                 )
               }
-              className="block w-full rounded-md border border-slate-300 pr-12 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500 dark:border-slate-600 dark:bg-slate-700 dark:text-white"
+              className="block w-full rounded-md border border-slate-300 pl-4 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500 dark:border-slate-600 dark:bg-slate-700 dark:text-white"
               required
             />
             <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
@@ -259,7 +245,7 @@ const ConcertProjectionForm: React.FC<ConcertProjectionFormProps> = ({
         {/* Company Percentage field */}
         <div>
           <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
-            Company Percentage
+            Porcentagem da Empresa
           </label>
           <div className="relative mt-1 rounded-md shadow-sm">
             <input
@@ -274,7 +260,7 @@ const ConcertProjectionForm: React.FC<ConcertProjectionFormProps> = ({
                   parseFloat(e.target.value) || 0
                 )
               }
-              className="block w-full rounded-md border border-slate-300 bg-slate-50 pr-12 py-2 text-sm text-slate-500 dark:border-slate-600 dark:bg-slate-700/50 dark:text-slate-400"
+              className="block w-full rounded-md border border-slate-300 bg-slate-50 pl-4 py-2 text-sm text-slate-500 dark:border-slate-600 dark:bg-slate-700/50 dark:text-slate-400"
             />
             <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
               <span className="text-slate-500 dark:text-slate-400">%</span>
@@ -285,7 +271,7 @@ const ConcertProjectionForm: React.FC<ConcertProjectionFormProps> = ({
         {/* Description field */}
         <div className="md:col-span-2">
           <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
-            Description
+            Descrição
           </label>
           <textarea
             value={formData.description}

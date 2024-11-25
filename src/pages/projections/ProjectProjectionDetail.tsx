@@ -79,7 +79,7 @@ const ProjectProjectionDetail = () => {
       const distributorProfit =
         grossRevenue - (grossRevenue * data.distributorPercentage) / 100;
       const proRataUSD = distributorProfit * (data.companyPercentage / 100);
-      const proRataBRL = proRataUSD * 5.5;
+      const proRataBRL = proRataUSD * 5;
       const netRevenue12Months = proRataBRL;
       const digitalProfitability = netRevenue12Months - (project?.budget || 0);
 
@@ -320,7 +320,7 @@ const ProjectProjectionDetail = () => {
                   Faturamento Líquido 12 meses
                 </p>
                 <p className="mt-1 text-lg font-medium text-slate-900 dark:text-white">
-                  {formatCurrency(projection.netRevenue12Months * 5.5)}
+                  {formatCurrency(projection.netRevenue12Months)}
                 </p>
               </div>
               <div>
@@ -328,7 +328,7 @@ const ProjectProjectionDetail = () => {
                   Orçamento do Projeto
                 </p>
                 <p className="mt-1 text-lg font-medium text-slate-900 dark:text-white">
-                  {formatCurrency(projection.projectBudget * 5.5)}
+                  {formatCurrency(projection.projectBudget)}
                 </p>
               </div>
               <div>
@@ -336,7 +336,7 @@ const ProjectProjectionDetail = () => {
                   Rentabilidade Digital
                 </p>
                 <p className="mt-1 text-lg font-medium text-slate-900 dark:text-white">
-                  {formatCurrency(projection.digitalProfitability * 5.5)}
+                  {formatCurrency(projection.digitalProfitability)}
                 </p>
               </div>
             </div>

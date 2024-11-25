@@ -76,31 +76,10 @@ const ProjectProjectionForm: React.FC<ProjectProjectionFormProps> = ({
     field: keyof typeof formData,
     value: string | number
   ) => {
-    const numValue = typeof value === 'string' ? parseFloat(value) || 0 : value;
-
-    if (field === 'artistPercentage') {
-      const remaining = Math.max(
-        0,
-        100 - formData.participationPercentage - numValue
-      );
-      setFormData((prev) => ({
-        ...prev,
-        [field]: numValue,
-        companyPercentage: remaining,
-      }));
-    } else if (field === 'participationPercentage') {
-      const remaining = Math.max(0, 100 - numValue - formData.artistPercentage);
-      setFormData((prev) => ({
-        ...prev,
-        [field]: numValue,
-        companyPercentage: remaining,
-      }));
-    } else {
-      setFormData((prev) => ({
-        ...prev,
-        [field]: value,
-      }));
-    }
+    setFormData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -122,7 +101,7 @@ const ProjectProjectionForm: React.FC<ProjectProjectionFormProps> = ({
         {/* Year field */}
         <div>
           <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
-            Year
+            Ano
           </label>
           <input
             type="number"
@@ -139,7 +118,7 @@ const ProjectProjectionForm: React.FC<ProjectProjectionFormProps> = ({
         {/* Project field */}
         <div>
           <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
-            Project
+            Projeto
           </label>
           <select
             value={formData.projectId}
@@ -147,7 +126,7 @@ const ProjectProjectionForm: React.FC<ProjectProjectionFormProps> = ({
             className="mt-1 block w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500 dark:border-slate-600 dark:bg-slate-700 dark:text-white"
             required
           >
-            <option value="">Select a project</option>
+            <option value="">Selecione um projeto</option>
             {projects.map((project) => (
               <option key={project.id} value={project.id}>
                 {project.title}
@@ -159,7 +138,7 @@ const ProjectProjectionForm: React.FC<ProjectProjectionFormProps> = ({
         {/* Distributor field */}
         <div>
           <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
-            Distributor
+            Distribuidor
           </label>
           <select
             value={formData.distributorId}
@@ -167,7 +146,7 @@ const ProjectProjectionForm: React.FC<ProjectProjectionFormProps> = ({
             className="mt-1 block w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500 dark:border-slate-600 dark:bg-slate-700 dark:text-white"
             required
           >
-            <option value="">Select a distributor</option>
+            <option value="">Selecione um distribuidor</option>
             {distributors.map((distributor) => (
               <option key={distributor.id} value={distributor.id}>
                 {distributor.name}
@@ -179,7 +158,7 @@ const ProjectProjectionForm: React.FC<ProjectProjectionFormProps> = ({
         {/* Number of Tracks field */}
         <div>
           <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
-            Number of Tracks
+            Número de Faixas
           </label>
           <input
             type="number"
@@ -196,7 +175,7 @@ const ProjectProjectionForm: React.FC<ProjectProjectionFormProps> = ({
         {/* Period field */}
         <div>
           <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
-            Period (days)
+            Periodo (dias)
           </label>
           <input
             type="number"
@@ -213,7 +192,7 @@ const ProjectProjectionForm: React.FC<ProjectProjectionFormProps> = ({
         {/* Average Daily Plays Per Track field */}
         <div>
           <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
-            Average Daily Plays Per Track
+            Média diária de plays por faixa
           </label>
           <input
             type="number"
@@ -233,7 +212,7 @@ const ProjectProjectionForm: React.FC<ProjectProjectionFormProps> = ({
         {/* Average Value Per M Plays field */}
         <div>
           <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
-            Average Value Per M Plays
+            Valor médio por Milhão de Plays
           </label>
           <div className="relative mt-1 rounded-md shadow-sm">
             <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
@@ -259,13 +238,14 @@ const ProjectProjectionForm: React.FC<ProjectProjectionFormProps> = ({
         {/* Participation Percentage field */}
         <div>
           <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
-            Participation Percentage
+            Porcentagem de Participação
           </label>
           <div className="relative mt-1 rounded-md shadow-sm">
             <input
               type="number"
               min="0"
               max="100"
+              step="0.5"
               value={formData.participationPercentage}
               onChange={(e) =>
                 handleInputChange(
@@ -273,7 +253,7 @@ const ProjectProjectionForm: React.FC<ProjectProjectionFormProps> = ({
                   parseFloat(e.target.value)
                 )
               }
-              className="block w-full rounded-md border border-slate-300 pr-12 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500 dark:border-slate-600 dark:bg-slate-700 dark:text-white"
+              className="block w-full rounded-md border border-slate-300 pl-4 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500 dark:border-slate-600 dark:bg-slate-700 dark:text-white"
               required
             />
             <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
@@ -285,13 +265,14 @@ const ProjectProjectionForm: React.FC<ProjectProjectionFormProps> = ({
         {/* Artist Percentage field */}
         <div>
           <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
-            Artist Percentage
+            Porcentagem do Artista
           </label>
           <div className="relative mt-1 rounded-md shadow-sm">
             <input
               type="number"
               min="0"
               max="100"
+              step="0.5"
               value={formData.artistPercentage}
               onChange={(e) =>
                 handleInputChange(
@@ -299,7 +280,7 @@ const ProjectProjectionForm: React.FC<ProjectProjectionFormProps> = ({
                   parseFloat(e.target.value)
                 )
               }
-              className="block w-full rounded-md border border-slate-300 pr-12 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500 dark:border-slate-600 dark:bg-slate-700 dark:text-white"
+              className="block w-full rounded-md border border-slate-300 pl-4 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500 dark:border-slate-600 dark:bg-slate-700 dark:text-white"
               required
             />
             <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
@@ -311,14 +292,22 @@ const ProjectProjectionForm: React.FC<ProjectProjectionFormProps> = ({
         {/* Company Percentage field */}
         <div>
           <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
-            Company Percentage
+            Porcentagem da Empresa
           </label>
           <div className="relative mt-1 rounded-md shadow-sm">
             <input
               type="number"
+              min="0"
+              max="100"
+              step="0.5"
               value={formData.companyPercentage}
-              readOnly
-              className="block w-full rounded-md border border-slate-300 bg-slate-50 pr-12 py-2 text-sm text-slate-500 dark:border-slate-600 dark:bg-slate-700/50 dark:text-slate-400"
+              onChange={(e) =>
+                handleInputChange(
+                  'companyPercentage',
+                  parseFloat(e.target.value)
+                )
+              }
+              className="block w-full rounded-md border border-slate-300 bg-slate-50 pl-4 py-2 text-sm text-slate-500 dark:border-slate-600 dark:bg-slate-700/50 dark:text-slate-400"
             />
             <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
               <span className="text-slate-500 dark:text-slate-400">%</span>

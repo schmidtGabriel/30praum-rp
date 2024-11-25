@@ -4,6 +4,7 @@ import { useArtists } from '../../hooks/useArtists';
 import { Loader2 } from 'lucide-react';
 import CancelButton from '../../components/CancelButton';
 import SaveButton from '../../components/SaveButton';
+import { ProjectTypeEnum } from '../../enums/ProjectTypeEnum';
 
 interface ProjectFormProps {
   project?: Project | null;
@@ -22,7 +23,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({
   const [formData, setFormData] = useState({
     title: '',
     artistId: '',
-    type: 'Album' as const,
+    type: ProjectTypeEnum.Single,
     releaseDate: new Date().toISOString().split('T')[0],
     description: '',
     budget: '0',
@@ -44,7 +45,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({
       setFormData({
         title: '',
         artistId: preselectedArtistId || '',
-        type: 'Album',
+        type: ProjectTypeEnum.Single,
         releaseDate: new Date().toISOString().split('T')[0],
         description: '',
         budget: '0',
@@ -74,7 +75,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
         <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
-          Title
+          Título
         </label>
         <input
           type="text"
@@ -87,7 +88,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({
 
       <div>
         <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
-          Description
+          Descrição
         </label>
         <textarea
           value={formData.description}
@@ -101,22 +102,24 @@ const ProjectForm: React.FC<ProjectFormProps> = ({
 
       <div>
         <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
-          Type
+          Tipo
         </label>
         <select
           value={formData.type}
           onChange={(e) =>
             setFormData({
               ...formData,
-              type: e.target.value as 'Album' | 'EP' | 'Single',
+              type: e.target.value as ProjectTypeEnum,
             })
           }
           className="mt-1 block w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500 dark:border-slate-600 dark:bg-slate-700 dark:text-white"
           required
         >
-          <option value="Album">Album</option>
-          <option value="EP">EP</option>
-          <option value="Single">Single</option>
+          {Object.entries(ProjectTypeEnum).map(([key, value]) => (
+            <option key={key} value={value}>
+              {key}
+            </option>
+          ))}
         </select>
       </div>
 

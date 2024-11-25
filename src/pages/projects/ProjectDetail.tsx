@@ -41,9 +41,9 @@ const ProjectDetail = () => {
   const [selectedTrack, setSelectedTrack] = useState<Track | null>(null);
   const [selectedSubProject, setSelectedSubProject] =
     useState<SubProject | null>(null);
-  const [modalType, setModalType] = useState<'track' | 'subproject' | 'project'>(
-    'track'
-  );
+  const [modalType, setModalType] = useState<
+    'track' | 'subproject' | 'project'
+  >('track');
 
   // Calculate total cost from subprojects
   const calculateTotalCost = (projectId: string) => {
@@ -78,8 +78,12 @@ const ProjectDetail = () => {
 
   const artist = artists.find((a) => a.id === project?.artistId);
   const artistTracks = tracks.filter((s) => s.artistId === project?.artistId);
-  const projectTracks = tracks.filter((s) => s.artistId === project?.artistId);
   const projectSubProjects = subProjects.filter((sp) => sp.projectId === id);
+
+  const projectTracks = tracks.filter((s) => project?.trackIds?.includes(s.id));
+  const availableTracks = artistTracks.filter(
+    (s) => !project?.trackIds?.includes(s.id)
+  );
 
   const handleEditProject = () => {
     setModalType('project');
@@ -95,12 +99,6 @@ const ProjectDetail = () => {
   const handleAddSubProject = () => {
     setSelectedSubProject(null);
     setModalType('subproject');
-    setIsModalOpen(true);
-  };
-
-  const handleEditTrack = (track: Track) => {
-    setSelectedTrack(track);
-    setModalType('track');
     setIsModalOpen(true);
   };
 
@@ -124,11 +122,16 @@ const ProjectDetail = () => {
 
   const handleSubmit = async (data: any) => {
     try {
+      if (!project) return;
+
       if (modalType === 'track') {
-        // Handle track selection
-        const selectedTrackId = data.trackId;
-        // Here you would update the project-track relationship
-        console.log('Selected track:', selectedTrackId);
+        const trackId = data.trackId;
+        const updatedTrackIds = [...(project?.trackIds || []), trackId];
+
+        await updateProject(project?.id, {
+          ...project,
+          trackIds: updatedTrackIds,
+        });
       } else if (modalType === 'project' && project) {
         // Preserve the current cost when updating project
         await updateProject(project.id, { ...data, cost: project.cost });
@@ -145,7 +148,12 @@ const ProjectDetail = () => {
     }
   };
 
-  if (projectsLoading || artistsLoading || subProjectsLoading || tracksLoading) {
+  if (
+    projectsLoading ||
+    artistsLoading ||
+    subProjectsLoading ||
+    tracksLoading
+  ) {
     return (
       <div className="flex h-[50vh] items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-purple-600" />
@@ -165,14 +173,14 @@ const ProjectDetail = () => {
           className="flex items-center text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-100"
         >
           <ArrowLeft className="mr-2 h-5 w-5" />
-          Back to Project
+          Voltar
         </button>
         <ActionButton
           onClick={handleEditProject}
           className="flex items-center"
           leftIcon={<Edit className="h-4 w-4" />}
         >
-          Edit Project
+          Editar Projeto
         </ActionButton>
       </div>
 
@@ -207,7 +215,9 @@ const ProjectDetail = () => {
             <p className="text-sm text-slate-600 dark:text-slate-400">
               Total Cost (from Sub-Projects)
             </p>
-            <p className="mt-1 font-medium">${project.cost?.toLocaleString()}</p>
+            <p className="mt-1 font-medium">
+              ${project.cost?.toLocaleString()}
+            </p>
           </div>
         </div>
         {project.description && (
@@ -344,7 +354,7 @@ const ProjectDetail = () => {
       >
         {modalType === 'track' ? (
           <ProjectTrackForm
-            availableTracks={artistTracks}
+            availableTracks={availableTracks}
             onSubmit={handleSubmit}
             onCancel={() => setIsModalOpen(false)}
           />

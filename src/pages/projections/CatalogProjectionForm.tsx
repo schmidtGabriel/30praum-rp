@@ -107,7 +107,7 @@ const CatalogProjectionForm: React.FC<CatalogProjectionFormProps> = ({
       <div className="grid gap-4 md:grid-cols-2">
         <div>
           <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
-            Artist
+            Artista
           </label>
           <select
             value={selectedArtistId}
@@ -115,7 +115,7 @@ const CatalogProjectionForm: React.FC<CatalogProjectionFormProps> = ({
             className="mt-1 block w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500 dark:border-slate-600 dark:bg-slate-700 dark:text-white"
             required
           >
-            <option value="">Select an artist</option>
+            <option value="">Selecione um artista</option>
             {artists.map((artist) => (
               <option key={artist.id} value={artist.id}>
                 {artist.name}
@@ -126,7 +126,7 @@ const CatalogProjectionForm: React.FC<CatalogProjectionFormProps> = ({
 
         <div>
           <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
-            Catalog
+            Catálogo
           </label>
           <select
             value={formData.catalogId}
@@ -134,7 +134,7 @@ const CatalogProjectionForm: React.FC<CatalogProjectionFormProps> = ({
             className="mt-1 block w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500 dark:border-slate-600 dark:bg-slate-700 dark:text-white"
             required
           >
-            <option value="">Select a catalog</option>
+            <option value="">Selecione um catálogo</option>
             {filteredCatalogs.map((catalog) => (
               <option key={catalog.id} value={catalog.id}>
                 {artists.find((a) => a.id === catalog.artistId)?.name}'s x{' '}
@@ -147,7 +147,7 @@ const CatalogProjectionForm: React.FC<CatalogProjectionFormProps> = ({
 
         <div>
           <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
-            Number of Tracks
+            Número de faixas
           </label>
           <input
             type="number"
@@ -163,7 +163,7 @@ const CatalogProjectionForm: React.FC<CatalogProjectionFormProps> = ({
 
         <div>
           <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
-            Period (Days)
+            Periodo (Dias)
           </label>
           <input
             type="number"
@@ -179,7 +179,7 @@ const CatalogProjectionForm: React.FC<CatalogProjectionFormProps> = ({
 
         <div>
           <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
-            Daily Plays per Track
+            Plays diários por faixa
           </label>
           <input
             type="number"
@@ -198,7 +198,7 @@ const CatalogProjectionForm: React.FC<CatalogProjectionFormProps> = ({
 
         <div>
           <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
-            Average Value
+            Média por Milhão de plays
           </label>
           <div className="relative mt-1 rounded-md shadow-sm">
             <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
@@ -225,7 +225,7 @@ const CatalogProjectionForm: React.FC<CatalogProjectionFormProps> = ({
 
         <div>
           <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
-            Participation Percentage
+            Porcentagem de Participação
           </label>
           <div className="relative mt-1 rounded-md shadow-sm">
             <input
@@ -240,7 +240,7 @@ const CatalogProjectionForm: React.FC<CatalogProjectionFormProps> = ({
                   parseFloat(e.target.value) || 0
                 )
               }
-              className="block w-full rounded-md border border-slate-300 pr-12 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500 dark:border-slate-600 dark:bg-slate-700 dark:text-white"
+              className="block w-full rounded-md border border-slate-300 pl-4 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500 dark:border-slate-600 dark:bg-slate-700 dark:text-white"
               required
             />
             <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
@@ -253,7 +253,7 @@ const CatalogProjectionForm: React.FC<CatalogProjectionFormProps> = ({
 
         <div>
           <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
-            Artist Percentage
+            Porcentagem do Artista
           </label>
           <div className="relative mt-1 rounded-md shadow-sm">
             <input
@@ -268,7 +268,7 @@ const CatalogProjectionForm: React.FC<CatalogProjectionFormProps> = ({
                   parseFloat(e.target.value) || 0
                 )
               }
-              className="block w-full rounded-md border border-slate-300 pr-12 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500 dark:border-slate-600 dark:bg-slate-700 dark:text-white"
+              className="block w-full rounded-md border border-slate-300 pl-4 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500 dark:border-slate-600 dark:bg-slate-700 dark:text-white"
               required
             />
             <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
@@ -281,7 +281,7 @@ const CatalogProjectionForm: React.FC<CatalogProjectionFormProps> = ({
 
         <div>
           <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
-            Company Percentage
+            Porcentagem da Empresa
           </label>
           <div className="relative mt-1 rounded-md shadow-sm">
             <input
@@ -296,7 +296,7 @@ const CatalogProjectionForm: React.FC<CatalogProjectionFormProps> = ({
                   parseFloat(e.target.value) || 0
                 )
               }
-              className="block w-full rounded-md border border-slate-300 bg-slate-50 pr-12 py-2 text-sm text-slate-500 dark:border-slate-600 dark:bg-slate-700/50 dark:text-slate-400"
+              className="block w-full rounded-md border border-slate-300 bg-slate-50 pl-4 py-2 text-sm text-slate-500 dark:border-slate-600 dark:bg-slate-700/50 dark:text-slate-400"
             />
             <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
               <span className="text-slate-500 dark:text-slate-400 sm:text-sm">

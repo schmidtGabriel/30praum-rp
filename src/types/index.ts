@@ -1,3 +1,5 @@
+import { ProjectTypeEnum } from '../enums/ProjectTypeEnum';
+
 export interface User {
   id: string;
   name: string;
@@ -27,11 +29,12 @@ export interface Project {
   id: string;
   title: string;
   artistId: string;
-  type: 'Album' | 'EP' | 'Single';
+  type: ProjectTypeEnum;
   releaseDate: string;
   description?: string;
   budget?: number;
   cost?: number;
+  trackIds: string[];
 }
 
 export interface SubProject {
@@ -109,7 +112,6 @@ export interface ProjectProjection {
   netRevenue12Months: number;
   projectBudget: number;
   digitalProfitability: number;
-  status?: 'draft' | 'active' | 'archived';
   createdAt: string;
   updatedAt: string;
 }

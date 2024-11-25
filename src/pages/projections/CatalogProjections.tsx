@@ -229,7 +229,7 @@ const CatalogProjections = () => {
         onEdit={handleEdit}
         onDelete={handleDelete}
         onView={handleView}
-        title="Catalog Projections"
+        title="Projeção de Catálogo"
       />
 
       <Modal
@@ -237,8 +237,8 @@ const CatalogProjections = () => {
         onClose={() => setIsModalOpen(false)}
         title={
           selectedProjection
-            ? 'Edit Catalog Projection'
-            : 'Add Catalog Projection'
+            ? 'Editar Projeção de Catálogo'
+            : 'Criar Projeção de Catálogo'
         }
       >
         <CatalogProjectionForm
