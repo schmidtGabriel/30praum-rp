@@ -43,7 +43,6 @@ const ProjectProjectionForm: React.FC<ProjectProjectionFormProps> = ({
     netRevenue12Months: 0,
     projectBudget: 0,
     digitalProfitability: 0,
-    status: 'draft' as const,
   });
 
   useEffect(() => {
@@ -69,7 +68,6 @@ const ProjectProjectionForm: React.FC<ProjectProjectionFormProps> = ({
         netRevenue12Months: projection.netRevenue12Months,
         projectBudget: projection.projectBudget,
         digitalProfitability: projection.digitalProfitability,
-        status: projection.status,
       });
     }
   }, [projection]);
@@ -91,10 +89,7 @@ const ProjectProjectionForm: React.FC<ProjectProjectionFormProps> = ({
         companyPercentage: remaining,
       }));
     } else if (field === 'participationPercentage') {
-      const remaining = Math.max(
-        0,
-        100 - numValue - formData.artistPercentage
-      );
+      const remaining = Math.max(0, 100 - numValue - formData.artistPercentage);
       setFormData((prev) => ({
         ...prev,
         [field]: numValue,
@@ -139,23 +134,6 @@ const ProjectProjectionForm: React.FC<ProjectProjectionFormProps> = ({
             className="mt-1 block w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500 dark:border-slate-600 dark:bg-slate-700 dark:text-white"
             required
           />
-        </div>
-
-        {/* Status field */}
-        <div>
-          <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
-            Status
-          </label>
-          <select
-            value={formData.status}
-            onChange={(e) => handleInputChange('status', e.target.value)}
-            className="mt-1 block w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500 dark:border-slate-600 dark:bg-slate-700 dark:text-white"
-            required
-          >
-            <option value="draft">Draft</option>
-            <option value="active">Active</option>
-            <option value="archived">Archived</option>
-          </select>
         </div>
 
         {/* Project field */}
@@ -316,7 +294,10 @@ const ProjectProjectionForm: React.FC<ProjectProjectionFormProps> = ({
               max="100"
               value={formData.artistPercentage}
               onChange={(e) =>
-                handleInputChange('artistPercentage', parseFloat(e.target.value))
+                handleInputChange(
+                  'artistPercentage',
+                  parseFloat(e.target.value)
+                )
               }
               className="block w-full rounded-md border border-slate-300 pr-12 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500 dark:border-slate-600 dark:bg-slate-700 dark:text-white"
               required

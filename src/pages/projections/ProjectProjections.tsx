@@ -10,6 +10,7 @@ import Modal from '../../components/Modal';
 import ProjectProjectionForm from './ProjectProjectionForm';
 import { Loader2 } from 'lucide-react';
 import Card from '../../components/Card';
+import formatCurrency from '../../helpers/formatCurrency';
 
 const ProjectProjections = () => {
   const {
@@ -27,41 +28,35 @@ const ProjectProjections = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProjection, setSelectedProjection] =
     useState<ProjectProjection | null>(null);
-  const [selectedYear, setSelectedYear] = useState<number>(new Date().getFullYear());
+  const [selectedYear, setSelectedYear] = useState<number>(
+    new Date().getFullYear()
+  );
   const [selectedArtistId, setSelectedArtistId] = useState('');
   const navigate = useNavigate();
 
   const columns = [
-    { key: 'year', label: 'Year' },
+    { key: 'year', label: 'Ano' },
     {
       key: 'projectId',
-      label: 'Project',
+      label: 'Projeto',
       render: (value: string) =>
         projects.find((p) => p.id === value)?.title || 'Unknown',
     },
     {
       key: 'distributorId',
-      label: 'Distributor',
+      label: 'Distribuidor',
       render: (value: string) =>
         distributors.find((d) => d.id === value)?.name || 'Unknown',
     },
     {
       key: 'grossRevenue',
-      label: 'Gross Revenue',
-      render: (value: number) =>
-        new Intl.NumberFormat('en-US', {
-          style: 'currency',
-          currency: 'USD',
-        }).format(value),
+      label: 'Faturamento Bruto',
+      render: (value: number) => formatCurrency(value, 'Dolar'),
     },
     {
       key: 'digitalProfitability',
-      label: 'Digital Profitability',
-      render: (value: number) =>
-        new Intl.NumberFormat('en-US', {
-          style: 'currency',
-          currency: 'USD',
-        }).format(value),
+      label: 'Rendimento Digital',
+      render: (value: number) => formatCurrency(value, 'Dolar'),
     },
     {
       key: 'status',
@@ -109,12 +104,13 @@ const ProjectProjections = () => {
       (data.numberOfTracks || 0) * (data.averageDailyPlaysPerTrack || 0);
     const totalPlays = averageDailyPlaysPerProject * (data.period || 365);
     const grossRevenue =
-      ((totalPlays / 1000000) * (data.averageValuePerMPlays || 0));
+      (totalPlays / 1000000) * (data.averageValuePerMPlays || 0);
     const distributor = distributors.find((d) => d.id === data.distributorId);
     const distributorPercentage = distributor?.percentage || 0;
     const distributorProfit =
       grossRevenue - (grossRevenue * distributorPercentage) / 100;
-    const proRataUSD = distributorProfit * ((data.companyPercentage || 0) / 100);
+    const proRataUSD =
+      distributorProfit * ((data.companyPercentage || 0) / 100);
     const proRataBRL = proRataUSD * 5.5;
     const project = projects.find((p) => p.id === data.projectId);
     const projectBudget = project?.budget || 0;
@@ -144,7 +140,10 @@ const ProjectProjections = () => {
         await updateProjectProjection(selectedProjection.id, calculatedData);
       } else {
         await createProjectProjection(
-          calculatedData as Omit<ProjectProjection, 'id' | 'createdAt' | 'updatedAt'>
+          calculatedData as Omit<
+            ProjectProjection,
+            'id' | 'createdAt' | 'updatedAt'
+          >
         );
       }
       setIsModalOpen(false);
@@ -154,10 +153,16 @@ const ProjectProjections = () => {
   };
 
   if (projectionsError) {
-    return <div className="text-red-600">Error: {projectionsError.message}</div>;
+    return (
+      <div className="text-red-600">Error: {projectionsError.message}</div>
+    );
   }
 
-  const isLoading = projectionsLoading || projectsLoading || distributorsLoading || artistsLoading;
+  const isLoading =
+    projectionsLoading ||
+    projectsLoading ||
+    distributorsLoading ||
+    artistsLoading;
 
   if (isLoading) {
     return (
@@ -167,14 +172,15 @@ const ProjectProjections = () => {
     );
   }
 
-  const years = Array.from(
-    new Set(projectProjections.map((p) => p.year))
-  ).sort((a, b) => b - a);
+  const years = Array.from(new Set(projectProjections.map((p) => p.year))).sort(
+    (a, b) => b - a
+  );
 
   const filteredProjections = projectProjections.filter((projection) => {
     const yearMatch = !selectedYear || projection.year === selectedYear;
     const project = projects.find((p) => p.id === projection.projectId);
-    const artistMatch = !selectedArtistId || project?.artistId === selectedArtistId;
+    const artistMatch =
+      !selectedArtistId || project?.artistId === selectedArtistId;
     return yearMatch && artistMatch;
   });
 
@@ -235,7 +241,9 @@ const ProjectProjections = () => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         title={
-          selectedProjection ? 'Edit Project Projection' : 'Add Project Projection'
+          selectedProjection
+            ? 'Edit Project Projection'
+            : 'Add Project Projection'
         }
       >
         <ProjectProjectionForm

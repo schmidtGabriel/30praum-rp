@@ -1,29 +1,31 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ConcertProjection } from '../../types';
-import { useConcertProjections } from '../../hooks/useConcertProjections';
+import { CatalogProjection } from '../../types';
+import { useCatalogProjections } from '../../hooks/useCatalogProjections';
 import { useArtists } from '../../hooks/useArtists';
+import { useCatalogs } from '../../hooks/useCatalogs';
 import DataTable from '../../components/DataTable';
 import Modal from '../../components/Modal';
-import ConcertProjectionForm from './ConcertProjectionForm';
+import CatalogProjectionForm from './CatalogProjectionForm';
 import { Loader2 } from 'lucide-react';
 import Card from '../../components/Card';
-import formatCurrency from '../../helpers/formatCurrency';
+import { useDistributors } from '../../hooks/useDistributors';
 
-const ConcertProjections = () => {
+const CatalogProjections = () => {
   const {
-    concertProjections,
+    catalogProjections,
     isLoading: projectionsLoading,
     error: projectionsError,
-    createConcertProjection,
-    updateConcertProjection,
-    deleteConcertProjection,
-  } = useConcertProjections();
+    createCatalogProjection,
+    updateCatalogProjection,
+    deleteCatalogProjection,
+  } = useCatalogProjections();
   const { artists, isLoading: artistsLoading } = useArtists();
-
+  const { catalogs, isLoading: catalogsLoading } = useCatalogs();
+  const { distributors } = useDistributors();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProjection, setSelectedProjection] =
-    useState<ConcertProjection | null>(null);
+    useState<CatalogProjection | null>(null);
   const [selectedYear, setSelectedYear] = useState<number>(
     new Date().getFullYear()
   );
@@ -31,8 +33,6 @@ const ConcertProjections = () => {
   const navigate = useNavigate();
 
   const columns = [
-    { key: 'title', label: 'Titulo' },
-    { key: 'year', label: 'Ano' },
     {
       key: 'artistId',
       label: 'Artista',
@@ -40,31 +40,41 @@ const ConcertProjections = () => {
         artists.find((a) => a.id === value)?.name || 'Unknown',
     },
     {
-      key: 'totalShows',
-      label: 'Shows Anual',
+      key: 'catalogId',
+      label: 'Catálogo',
+      render: (value: string) => {
+        const catalog = catalogs.find((c) => c.id === value);
+        const artist = artists.find((a) => a.id === catalog?.artistId);
+        return `${artist?.name || 'Unknown'}'s Catalog`;
+      },
+    },
+    {
+      key: 'numberOfTracks',
+      label: 'Faixas',
       render: (value: number) => value.toLocaleString(),
     },
     {
-      key: 'grossRevenue',
-      label: 'Faturamento Bruto',
-      render: (value: number) => formatCurrency(value, 'Dolar'),
+      key: 'dailyPlaysPerCatalog',
+      label: 'Plays Diários',
+      render: (value: number) => value.toLocaleString(),
     },
     {
-      key: 'status',
-      label: 'Status',
-      render: (value: string) => (
-        <span
-          className={`inline-flex rounded-full px-2 text-xs font-semibold leading-5 ${
-            value === 'active'
-              ? 'bg-green-100 text-green-800'
-              : value === 'draft'
-              ? 'bg-yellow-100 text-yellow-800'
-              : 'bg-gray-100 text-gray-800'
-          }`}
-        >
-          {value.charAt(0).toUpperCase() + value.slice(1)}
-        </span>
-      ),
+      key: 'grossProfit',
+      label: 'Lucro bruto',
+      render: (value: number) =>
+        new Intl.NumberFormat('en-US', {
+          style: 'currency',
+          currency: 'USD',
+        }).format(value),
+    },
+    {
+      key: 'profitability',
+      label: 'Rentabilidade',
+      render: (value: number) =>
+        new Intl.NumberFormat('en-US', {
+          style: 'currency',
+          currency: 'USD',
+        }).format(value),
     },
   ];
 
@@ -73,58 +83,70 @@ const ConcertProjections = () => {
     setIsModalOpen(true);
   };
 
-  const handleEdit = (projection: ConcertProjection) => {
+  const handleEdit = (projection: CatalogProjection) => {
     setSelectedProjection(projection);
     setIsModalOpen(true);
   };
 
-  const handleView = (projection: ConcertProjection) => {
-    navigate(`/concert-projections/${projection.id}`);
+  const handleView = (projection: CatalogProjection) => {
+    navigate(`/catalog-projections/${projection.id}`);
   };
 
-  const handleDelete = async (projection: ConcertProjection) => {
+  const handleDelete = async (projection: CatalogProjection) => {
     if (window.confirm('Are you sure you want to delete this projection?')) {
-      await deleteConcertProjection(projection.id);
+      await deleteCatalogProjection(projection.id);
     }
   };
 
   const calculateProjectionValues = (
-    data: Partial<ConcertProjection>
-  ): Partial<ConcertProjection> => {
-    const totalShows = (data.showsPerMonth || 0) * ((data.period || 12) / 12);
-    const grossRevenue = totalShows * (data.averageTicketValue || 0);
-    const crewShare = (grossRevenue * (data.crewPercentage || 0)) / 100;
-    const artistShare = (grossRevenue * (data.artistPercentage || 0)) / 100;
-    const companyShare = (grossRevenue * (data.companyPercentage || 0)) / 100;
+    data: Partial<CatalogProjection>
+  ): Partial<CatalogProjection> => {
+    const catalog = catalogs.find((c) => c.id === data.catalogId);
+    const distributor = distributors.find(
+      (d) => d.id === catalog?.distributorId
+    );
+
+    const dailyPlaysPerCatalog =
+      (data.numberOfTracks || 0) * (data.dailyPlaysPerTrack || 0);
+    const totalPlays = dailyPlaysPerCatalog * (data.period || 365);
+
+    const grossRevenue = (totalPlays / 1000000) * (data?.averageValue ?? 0);
+    const grossProfit = distributor
+      ? grossRevenue - (grossRevenue / 100) * distributor?.percentage
+      : 0;
+
+    const proRata = (grossProfit * (data?.companyPercentage ?? 0.4)) / 100;
+    const profitability = proRata * 5;
 
     return {
       ...data,
-      totalShows,
+      dailyPlaysPerCatalog,
+      totalPlays,
+      grossProfit,
       grossRevenue,
-      crewShare,
-      artistShare,
-      companyShare,
+      proRata,
+      profitability,
     };
   };
 
   const handleSubmit = async (
-    data: Omit<ConcertProjection, 'id' | 'createdAt' | 'updatedAt'>
+    data: Omit<CatalogProjection, 'id' | 'createdAt' | 'updatedAt'>
   ) => {
     try {
       const calculatedData = calculateProjectionValues(data);
       if (selectedProjection) {
-        await updateConcertProjection(selectedProjection.id, calculatedData);
+        await updateCatalogProjection(selectedProjection.id, calculatedData);
       } else {
-        await createConcertProjection(
+        await createCatalogProjection(
           calculatedData as Omit<
-            ConcertProjection,
+            CatalogProjection,
             'id' | 'createdAt' | 'updatedAt'
           >
         );
       }
       setIsModalOpen(false);
     } catch (error) {
-      console.error('Failed to save concert projection:', error);
+      console.error('Failed to save catalog projection:', error);
     }
   };
 
@@ -134,7 +156,7 @@ const ConcertProjections = () => {
     );
   }
 
-  const isLoading = projectionsLoading || artistsLoading;
+  const isLoading = projectionsLoading || artistsLoading || catalogsLoading;
 
   if (isLoading) {
     return (
@@ -144,12 +166,14 @@ const ConcertProjections = () => {
     );
   }
 
-  const years = Array.from(new Set(concertProjections.map((p) => p.year))).sort(
-    (a, b) => b - a
-  );
+  const years = Array.from(
+    new Set(catalogProjections.map((p) => new Date(p.createdAt).getFullYear()))
+  ).sort((a, b) => b - a);
 
-  const filteredProjections = concertProjections.filter((projection) => {
-    const yearMatch = !selectedYear || projection.year === selectedYear;
+  const filteredProjections = catalogProjections.filter((projection) => {
+    const yearMatch =
+      !selectedYear ||
+      new Date(projection.createdAt).getFullYear() === selectedYear;
     const artistMatch =
       !selectedArtistId || projection.artistId === selectedArtistId;
     return yearMatch && artistMatch;
@@ -162,14 +186,14 @@ const ConcertProjections = () => {
         <div className="flex flex-wrap gap-4">
           <div className="w-48">
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
-              Year
+              Ano
             </label>
             <select
               value={selectedYear}
               onChange={(e) => setSelectedYear(parseInt(e.target.value))}
               className="mt-1 block w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500 dark:border-slate-600 dark:bg-slate-700 dark:text-white"
             >
-              <option value="">All Years</option>
+              <option value="">Todos</option>
               {years.map((year) => (
                 <option key={year} value={year}>
                   {year}
@@ -180,14 +204,14 @@ const ConcertProjections = () => {
 
           <div className="w-48">
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
-              Artist
+              Artista
             </label>
             <select
               value={selectedArtistId}
               onChange={(e) => setSelectedArtistId(e.target.value)}
               className="mt-1 block w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500 dark:border-slate-600 dark:bg-slate-700 dark:text-white"
             >
-              <option value="">All Artists</option>
+              <option value="">Todos Artistas</option>
               {artists.map((artist) => (
                 <option key={artist.id} value={artist.id}>
                   {artist.name}
@@ -205,7 +229,7 @@ const ConcertProjections = () => {
         onEdit={handleEdit}
         onDelete={handleDelete}
         onView={handleView}
-        title="Concert Projections"
+        title="Catalog Projections"
       />
 
       <Modal
@@ -213,11 +237,11 @@ const ConcertProjections = () => {
         onClose={() => setIsModalOpen(false)}
         title={
           selectedProjection
-            ? 'Edit Concert Projection'
-            : 'Add Concert Projection'
+            ? 'Edit Catalog Projection'
+            : 'Add Catalog Projection'
         }
       >
-        <ConcertProjectionForm
+        <CatalogProjectionForm
           projection={selectedProjection}
           onSubmit={handleSubmit}
           onCancel={() => setIsModalOpen(false)}
@@ -227,4 +251,4 @@ const ConcertProjections = () => {
   );
 };
 
-export default ConcertProjections;
+export default CatalogProjections;

@@ -8,6 +8,7 @@ import Modal from '../../components/Modal';
 import ConcertProjectionForm from './ConcertProjectionForm';
 import Card from '../../components/Card';
 import ActionButton from '../../components/ActionButton';
+import formatCurrency from '../../helpers/formatCurrency';
 
 const ConcertProjectionDetail = () => {
   const { id } = useParams();
@@ -41,7 +42,7 @@ const ConcertProjectionDetail = () => {
     if (!projection) return;
 
     try {
-      const totalShows = (data.showsPerYear * data.period) / 12;
+      const totalShows = data.showsPerMonth * data.period;
       const grossRevenue = totalShows * data.averageTicketValue;
       const crewShare = (grossRevenue * data.crewPercentage) / 100;
       const artistShare = (grossRevenue * data.artistPercentage) / 100;
@@ -59,19 +60,12 @@ const ConcertProjectionDetail = () => {
       await updateConcertProjection(projection.id, calculatedData);
       setIsModalOpen(false);
     } catch (error) {
-      console.error('Failed to update projection:', error);
+      console.error('Falha ao atualizar projeção:', error);
     }
   };
 
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    }).format(value);
-  };
-
   const formatNumber = (value: number) => {
-    return new Intl.NumberFormat('en-US').format(value);
+    return new Intl.NumberFormat('pt-BR').format(value);
   };
 
   if (projectionsLoading || artistsLoading) {
@@ -94,14 +88,14 @@ const ConcertProjectionDetail = () => {
           className="flex items-center text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-100"
         >
           <ArrowLeft className="mr-2 h-5 w-5" />
-          Back to Concert Projections
+          Voltar para Projeções de Concertos
         </button>
         <ActionButton
           onClick={handleEdit}
           className="flex items-center"
           leftIcon={<Edit className="h-4 w-4" />}
         >
-          Edit Projection
+          Editar Projeção
         </ActionButton>
       </div>
 
@@ -113,23 +107,12 @@ const ConcertProjectionDetail = () => {
               {projection.title}
             </h1>
             <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
-              Artist: {artist.name}
+              Artista: {artist.name}
             </p>
             <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
-              Year: {projection.year}
+              Ano: {projection.year}
             </p>
           </div>
-          <span
-            className={`inline-flex rounded-full px-3 py-1 text-sm font-semibold ${
-              projection.status === 'active'
-                ? 'bg-green-100 text-green-800'
-                : projection.status === 'draft'
-                ? 'bg-yellow-100 text-yellow-800'
-                : 'bg-gray-100 text-gray-800'
-            }`}
-          >
-            {projection.status.charAt(0).toUpperCase() + projection.status.slice(1)}
-          </span>
         </div>
         {projection.description && (
           <p className="mt-4 text-slate-600 dark:text-slate-400">
@@ -142,28 +125,28 @@ const ConcertProjectionDetail = () => {
       <div className="grid gap-6 md:grid-cols-2">
         <Card>
           <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
-            Concert Information
+            Informações do Concerto
           </h2>
           <div className="mt-4 space-y-4">
             <div>
               <p className="text-sm text-slate-600 dark:text-slate-400">
-                Shows per Year
+                Shows por mês
               </p>
               <p className="mt-1 text-lg font-medium text-slate-900 dark:text-white">
-                {projection.showsPerYear}
+                {projection.showsPerMonth}
               </p>
             </div>
             <div>
               <p className="text-sm text-slate-600 dark:text-slate-400">
-                Period
+                Período
               </p>
               <p className="mt-1 text-lg font-medium text-slate-900 dark:text-white">
-                {projection.period} months
+                {projection.period} meses
               </p>
             </div>
             <div>
               <p className="text-sm text-slate-600 dark:text-slate-400">
-                Total Shows
+                Total de Shows
               </p>
               <p className="mt-1 text-lg font-medium text-slate-900 dark:text-white">
                 {formatNumber(projection.totalShows)}
@@ -171,7 +154,7 @@ const ConcertProjectionDetail = () => {
             </div>
             <div>
               <p className="text-sm text-slate-600 dark:text-slate-400">
-                Average Ticket Value
+                Valor Médio por Show
               </p>
               <p className="mt-1 text-lg font-medium text-slate-900 dark:text-white">
                 {formatCurrency(projection.averageTicketValue)}
@@ -182,25 +165,33 @@ const ConcertProjectionDetail = () => {
 
         <Card>
           <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
-            Financial Information
+            Informações Financeiras
           </h2>
           <div className="mt-4 space-y-4">
             <div>
               <p className="text-sm text-slate-600 dark:text-slate-400">
-                Gross Revenue
+                Receita Bruta
               </p>
               <p className="mt-1 text-lg font-medium text-slate-900 dark:text-white">
                 {formatCurrency(projection.grossRevenue)}
               </p>
             </div>
+            <div>
+              <p className="text-sm text-slate-600 dark:text-slate-400">
+                Rentabilidade - Empresa
+              </p>
+              <p className="mt-1 text-lg font-medium text-slate-900 dark:text-white">
+                {formatCurrency(projection.companyShare)}
+              </p>
+            </div>
             <div className="border-t pt-4">
               <h3 className="mb-4 font-medium text-slate-900 dark:text-white">
-                Revenue Distribution
+                Distribuição de Receita
               </h3>
               <div className="space-y-3">
                 <div>
                   <p className="text-sm text-slate-600 dark:text-slate-400">
-                    Crew Share ({projection.crewPercentage}%)
+                    Parte da Equipe ({projection.crewPercentage}%)
                   </p>
                   <p className="mt-1 text-lg font-medium text-slate-900 dark:text-white">
                     {formatCurrency(projection.crewShare)}
@@ -208,7 +199,7 @@ const ConcertProjectionDetail = () => {
                 </div>
                 <div>
                   <p className="text-sm text-slate-600 dark:text-slate-400">
-                    Artist Share ({projection.artistPercentage}%)
+                    Parte do Artista ({projection.artistPercentage}%)
                   </p>
                   <p className="mt-1 text-lg font-medium text-slate-900 dark:text-white">
                     {formatCurrency(projection.artistShare)}
@@ -216,7 +207,7 @@ const ConcertProjectionDetail = () => {
                 </div>
                 <div>
                   <p className="text-sm text-slate-600 dark:text-slate-400">
-                    Company Share ({projection.companyPercentage}%)
+                    Parte da Empresa ({projection.companyPercentage}%)
                   </p>
                   <p className="mt-1 text-lg font-medium text-slate-900 dark:text-white">
                     {formatCurrency(projection.companyShare)}
@@ -232,7 +223,7 @@ const ConcertProjectionDetail = () => {
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        title="Edit Concert Projection"
+        title="Editar Projeção de Concerto"
       >
         <ConcertProjectionForm
           projection={projection}

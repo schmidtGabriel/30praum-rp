@@ -10,12 +10,12 @@ import Artists from './pages/artists/Artists';
 import ArtistDetail from './pages/artists/ArtistDetail';
 import Catalogs from './pages/catalogs/Catalogs';
 import CatalogDetail from './pages/catalogs/CatalogDetail';
-import CatalogProjections from './pages/catalogs/CatalogProjections';
-import CatalogProjectionDetail from './pages/catalogs/CatalogProjectionDetail';
-import ProjectProjections from './pages/projections/ProjectProjections';
-import ProjectProjectionDetail from './pages/projections/ProjectProjectionDetail';
+import CatalogProjections from './pages/projections/CatalogProjections';
+import CatalogProjectionDetail from './pages/projections/CatalogProjectionDetail';
 import ConcertProjections from './pages/projections/ConcertProjections';
 import ConcertProjectionDetail from './pages/projections/ConcertProjectionDetail';
+import ProjectProjections from './pages/projections/ProjectProjections';
+import ProjectProjectionDetail from './pages/projections/ProjectProjectionDetail';
 import RevenueProjections from './pages/projections/RevenueProjections';
 import Users from './pages/users/Users';
 import Projects from './pages/projects/Projects';
@@ -42,13 +42,34 @@ export default function App() {
                 <Route path="/subprojects/:id" element={<SubProjectDetail />} />
                 <Route path="/catalogs" element={<Catalogs />} />
                 <Route path="/catalogs/:id" element={<CatalogDetail />} />
-                <Route path="/catalog-projections" element={<CatalogProjections />} />
-                <Route path="/catalog-projections/:id" element={<CatalogProjectionDetail />} />
-                <Route path="/project-projections" element={<ProjectProjections />} />
-                <Route path="/project-projections/:id" element={<ProjectProjectionDetail />} />
-                <Route path="/concert-projections" element={<ConcertProjections />} />
-                <Route path="/concert-projections/:id" element={<ConcertProjectionDetail />} />
-                <Route path="/revenue-projections" element={<RevenueProjections />} />
+                <Route
+                  path="/catalog-projections"
+                  element={<CatalogProjections />}
+                />
+                <Route
+                  path="/catalog-projections/:id"
+                  element={<CatalogProjectionDetail />}
+                />
+                <Route
+                  path="/concert-projections"
+                  element={<ConcertProjections />}
+                />
+                <Route
+                  path="/concert-projections/:id"
+                  element={<ConcertProjectionDetail />}
+                />
+                <Route
+                  path="/project-projections"
+                  element={<ProjectProjections />}
+                />
+                <Route
+                  path="/project-projections/:id"
+                  element={<ProjectProjectionDetail />}
+                />
+                <Route
+                  path="/revenue-projections"
+                  element={<RevenueProjections />}
+                />
                 <Route path="/distributors" element={<Distributors />} />
                 <Route path="/users" element={<Users />} />
               </Route>

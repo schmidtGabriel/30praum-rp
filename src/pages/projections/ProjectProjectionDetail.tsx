@@ -9,6 +9,7 @@ import Modal from '../../components/Modal';
 import ProjectProjectionForm from './ProjectProjectionForm';
 import Card from '../../components/Card';
 import ActionButton from '../../components/ActionButton';
+import formatCurrency from '../../helpers/formatCurrency';
 
 const ProjectProjectionDetail = () => {
   const { id } = useParams();
@@ -32,18 +33,24 @@ const ProjectProjectionDetail = () => {
   }, [id, projectProjections, projectionsLoading]);
 
   const project = projects.find((p) => p.id === projection?.projectId);
-  const distributor = distributors.find((d) => d.id === projection?.distributorId);
+  const distributor = distributors.find(
+    (d) => d.id === projection?.distributorId
+  );
 
   const calculateDistribution = () => {
     if (!projection) return null;
 
     const grossRevenue = projection.grossRevenue;
-    const distributorAmount = (grossRevenue * projection.distributorPercentage) / 100;
+    const distributorAmount =
+      (grossRevenue * projection.distributorPercentage) / 100;
     const netRevenue = grossRevenue - distributorAmount;
-    
-    const participationAmount = (netRevenue * projection.participationPercentage) / 100;
-    const artistAmount = (participationAmount * projection.artistPercentage) / 100;
-    const companyAmount = (participationAmount * projection.companyPercentage) / 100;
+
+    const participationAmount =
+      (netRevenue * projection.participationPercentage) / 100;
+    const artistAmount =
+      (participationAmount * projection.artistPercentage) / 100;
+    const companyAmount =
+      (participationAmount * projection.companyPercentage) / 100;
 
     return {
       gross: grossRevenue,
@@ -92,19 +99,12 @@ const ProjectProjectionDetail = () => {
       await updateProjectProjection(projection.id, calculatedData);
       setIsModalOpen(false);
     } catch (error) {
-      console.error('Failed to update projection:', error);
+      console.error('Falha ao atualizar projeção:', error);
     }
   };
 
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    }).format(value);
-  };
-
   const formatNumber = (value: number) => {
-    return new Intl.NumberFormat('en-US').format(value);
+    return new Intl.NumberFormat('pt-BR').format(value);
   };
 
   if (projectionsLoading || projectsLoading || distributorsLoading) {
@@ -129,23 +129,23 @@ const ProjectProjectionDetail = () => {
           className="flex items-center text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-100"
         >
           <ArrowLeft className="mr-2 h-5 w-5" />
-          Back to Project Projections
+          Voltar
         </button>
         <ActionButton
           onClick={handleEdit}
           className="flex items-center"
           leftIcon={<Edit className="h-4 w-4" />}
         >
-          Edit Projection
+          Editar Projeção
         </ActionButton>
       </div>
 
       {/* Basic Info Card */}
       <Card>
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid gap-6 md:grid-cols-3">
           <div>
             <h3 className="text-sm font-medium text-slate-500 dark:text-slate-400">
-              Project
+              Projeto
             </h3>
             <p className="mt-2 text-lg font-semibold text-slate-900 dark:text-white">
               {project.title}
@@ -153,7 +153,7 @@ const ProjectProjectionDetail = () => {
           </div>
           <div>
             <h3 className="text-sm font-medium text-slate-500 dark:text-slate-400">
-              Year
+              Ano
             </h3>
             <p className="mt-2 text-lg font-semibold text-slate-900 dark:text-white">
               {projection.year}
@@ -161,7 +161,7 @@ const ProjectProjectionDetail = () => {
           </div>
           <div>
             <h3 className="text-sm font-medium text-slate-500 dark:text-slate-400">
-              Distributor
+              Distribuidor
             </h3>
             <p className="mt-2 text-lg font-semibold text-slate-900 dark:text-white">
               {distributor.name}
@@ -169,10 +169,26 @@ const ProjectProjectionDetail = () => {
           </div>
           <div>
             <h3 className="text-sm font-medium text-slate-500 dark:text-slate-400">
-              Number of Tracks
+              Número de Faixas
             </h3>
             <p className="mt-2 text-lg font-semibold text-slate-900 dark:text-white">
               {projection.numberOfTracks}
+            </p>
+          </div>
+          <div>
+            <h3 className="text-sm font-medium text-slate-500 dark:text-slate-400">
+              Periodo
+            </h3>
+            <p className="mt-2 text-lg font-semibold text-slate-900 dark:text-white">
+              {projection.period}
+            </p>
+          </div>
+          <div>
+            <h3 className="text-sm font-medium text-slate-500 dark:text-slate-400">
+              Valor Médio por Milhão de Plays
+            </h3>
+            <p className="mt-2 text-lg font-semibold text-slate-900 dark:text-white">
+              {formatCurrency(projection.averageValuePerMPlays ?? 0, 'Dolar')}
             </p>
           </div>
         </div>
@@ -181,12 +197,12 @@ const ProjectProjectionDetail = () => {
       {/* Plays Info Card */}
       <Card>
         <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
-          Play Statistics
+          Estatísticas de Reprodução
         </h2>
         <div className="mt-4 grid gap-6 md:grid-cols-3">
           <div>
             <p className="text-sm text-slate-600 dark:text-slate-400">
-              Daily Plays per Track
+              Reproduções Diárias por Faixa
             </p>
             <p className="mt-1 text-lg font-medium text-slate-900 dark:text-white">
               {formatNumber(projection.averageDailyPlaysPerTrack)}
@@ -194,7 +210,7 @@ const ProjectProjectionDetail = () => {
           </div>
           <div>
             <p className="text-sm text-slate-600 dark:text-slate-400">
-              Daily Plays per Project
+              Reproduções Diárias por Projeto
             </p>
             <p className="mt-1 text-lg font-medium text-slate-900 dark:text-white">
               {formatNumber(projection.averageDailyPlaysPerProject)}
@@ -202,7 +218,7 @@ const ProjectProjectionDetail = () => {
           </div>
           <div>
             <p className="text-sm text-slate-600 dark:text-slate-400">
-              Total Plays
+              Total de Reproduções
             </p>
             <p className="mt-1 text-lg font-medium text-slate-900 dark:text-white">
               {formatNumber(projection.totalPlays)}
@@ -214,55 +230,81 @@ const ProjectProjectionDetail = () => {
       {/* Financial Info Card */}
       <Card>
         <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
-          Financial Information
+          Informações Financeiras
         </h2>
         <div className="mt-4 space-y-6">
           <div className="grid gap-6 md:grid-cols-2">
             <div>
               <p className="text-sm text-slate-600 dark:text-slate-400">
-                Gross Revenue
+                Faturamento Bruta
               </p>
               <p className="mt-1 text-lg font-medium text-slate-900 dark:text-white">
-                {formatCurrency(distribution?.gross || 0)}
+                {formatCurrency(distribution?.gross || 0, 'Dolar')}
               </p>
             </div>
             <div>
               <p className="text-sm text-slate-600 dark:text-slate-400">
-                Net Revenue
+                Lucro Bruto (Faturamento Bruto - % Distribuidora)
               </p>
               <p className="mt-1 text-lg font-medium text-slate-900 dark:text-white">
-                {formatCurrency(distribution?.net || 0)}
+                {formatCurrency(
+                  distribution?.gross
+                    ? distribution?.gross - distribution.distributor
+                    : 0,
+                  'Dolar'
+                )}
               </p>
             </div>
           </div>
 
           <div className="border-t pt-4">
+            <div className="grid gap-6 md:grid-cols-2">
+              <div>
+                <p className="text-sm text-slate-600 dark:text-slate-400">
+                  Pro-rata (Dolars)
+                </p>
+                <p className="mt-1 text-lg font-medium text-slate-900 dark:text-white">
+                  {formatCurrency(projection.proRataUSD || 0, 'Dolar')}
+                </p>
+              </div>
+              <div>
+                <p className="text-sm text-slate-600 dark:text-slate-400">
+                  Pro-rata (Reais)
+                </p>
+                <p className="mt-1 text-lg font-medium text-slate-900 dark:text-white">
+                  {formatCurrency(projection.proRataBRL || 0)}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="border-t pt-4">
             <h3 className="mb-4 font-medium text-slate-900 dark:text-white">
-              Revenue Distribution
+              Distribuição de Receita
             </h3>
             <div className="grid gap-6 md:grid-cols-3">
               <div>
                 <p className="text-sm text-slate-600 dark:text-slate-400">
-                  Distributor Share ({projection.distributorPercentage}%)
+                  Parte do Distribuidor ({projection.distributorPercentage}%)
                 </p>
                 <p className="mt-1 text-lg font-medium text-slate-900 dark:text-white">
-                  {formatCurrency(distribution?.distributor || 0)}
+                  {formatCurrency(distribution?.distributor || 0, 'Dolar')}
                 </p>
               </div>
               <div>
                 <p className="text-sm text-slate-600 dark:text-slate-400">
-                  Artist Share ({projection.artistPercentage}%)
+                  Parte do Artista ({projection.artistPercentage}%)
                 </p>
                 <p className="mt-1 text-lg font-medium text-slate-900 dark:text-white">
-                  {formatCurrency(distribution?.artist || 0)}
+                  {formatCurrency(distribution?.artist || 0, 'Dolar')}
                 </p>
               </div>
               <div>
                 <p className="text-sm text-slate-600 dark:text-slate-400">
-                  Company Share ({projection.companyPercentage}%)
+                  Parte da Empresa ({projection.companyPercentage}%)
                 </p>
                 <p className="mt-1 text-lg font-medium text-slate-900 dark:text-white">
-                  {formatCurrency(distribution?.company || 0)}
+                  {formatCurrency(distribution?.company || 0, 'Dolar')}
                 </p>
               </div>
             </div>
@@ -270,23 +312,31 @@ const ProjectProjectionDetail = () => {
 
           <div className="border-t pt-4">
             <h3 className="mb-4 font-medium text-slate-900 dark:text-white">
-              Profitability
+              Rentabilidade
             </h3>
-            <div className="grid gap-6 md:grid-cols-2">
+            <div className="grid gap-6 md:grid-cols-3">
               <div>
                 <p className="text-sm text-slate-600 dark:text-slate-400">
-                  Project Budget
+                  Faturamento Líquido 12 meses
                 </p>
                 <p className="mt-1 text-lg font-medium text-slate-900 dark:text-white">
-                  {formatCurrency(projection.projectBudget)}
+                  {formatCurrency(projection.netRevenue12Months * 5.5)}
                 </p>
               </div>
               <div>
                 <p className="text-sm text-slate-600 dark:text-slate-400">
-                  Digital Profitability
+                  Orçamento do Projeto
                 </p>
                 <p className="mt-1 text-lg font-medium text-slate-900 dark:text-white">
-                  {formatCurrency(projection.digitalProfitability)}
+                  {formatCurrency(projection.projectBudget * 5.5)}
+                </p>
+              </div>
+              <div>
+                <p className="text-sm text-slate-600 dark:text-slate-400">
+                  Rentabilidade Digital
+                </p>
+                <p className="mt-1 text-lg font-medium text-slate-900 dark:text-white">
+                  {formatCurrency(projection.digitalProfitability * 5.5)}
                 </p>
               </div>
             </div>
@@ -298,7 +348,7 @@ const ProjectProjectionDetail = () => {
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        title="Edit Project Projection"
+        title="Editar Projeção de Projeto"
       >
         <ProjectProjectionForm
           projection={projection}

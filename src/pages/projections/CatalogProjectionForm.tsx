@@ -1,63 +1,80 @@
 import React, { useState, useEffect } from 'react';
-import { ConcertProjection } from '../../types';
+import { CatalogProjection } from '../../types';
 import { useArtists } from '../../hooks/useArtists';
+import { useCatalogs } from '../../hooks/useCatalogs';
 import { Loader2 } from 'lucide-react';
 import SaveButton from '../../components/SaveButton';
 import CancelButton from '../../components/CancelButton';
+import { useDistributors } from '../../hooks/useDistributors';
 
-interface ConcertProjectionFormProps {
-  projection?: ConcertProjection | null;
+interface CatalogProjectionFormProps {
+  projection?: CatalogProjection | null;
   onSubmit: (
-    data: Omit<ConcertProjection, 'id' | 'createdAt' | 'updatedAt'>
+    data: Omit<CatalogProjection, 'id' | 'createdAt' | 'updatedAt'>
   ) => void;
   onCancel: () => void;
 }
 
-const ConcertProjectionForm: React.FC<ConcertProjectionFormProps> = ({
+const CatalogProjectionForm: React.FC<CatalogProjectionFormProps> = ({
   projection,
   onSubmit,
   onCancel,
 }) => {
   const { artists, isLoading: artistsLoading } = useArtists();
+  const { catalogs, isLoading: catalogsLoading } = useCatalogs();
+  const { distributors } = useDistributors();
+
   const [formData, setFormData] = useState({
-    title: '',
-    year: new Date().getFullYear(),
     artistId: '',
-    showsPerMonth: 0,
-    period: 12,
-    averageTicketValue: 0,
-    crewPercentage: 20,
+    catalogId: '',
+    numberOfTracks: 1,
+    period: 365,
+    dailyPlaysPerTrack: 0,
+    dailyPlaysPerCatalog: 0,
+    totalPlays: 0,
+    averageValue: 1000,
+    participationPercentage: 20,
     artistPercentage: 40,
     companyPercentage: 40,
-    totalShows: 0,
-    grossRevenue: 0,
-    crewShare: 0,
-    artistShare: 0,
-    companyShare: 0,
-    description: '',
+    proRata: 0,
+    profitability: 0,
   });
+
+  const [selectedArtistId, setSelectedArtistId] = useState('');
 
   useEffect(() => {
     if (projection) {
       setFormData({
-        title: projection.title || '',
-        year: projection.year || new Date().getFullYear(),
-        artistId: projection.artistId || '',
-        showsPerMonth: projection.showsPerMonth || 0,
-        period: projection.period || 12,
-        averageTicketValue: projection.averageTicketValue || 0,
-        crewPercentage: projection.crewPercentage || 20,
-        artistPercentage: projection.artistPercentage || 40,
-        companyPercentage: projection.companyPercentage || 40,
-        totalShows: projection.totalShows || 0,
-        grossRevenue: projection.grossRevenue || 0,
-        crewShare: projection.crewShare || 0,
-        artistShare: projection.artistShare || 0,
-        companyShare: projection.companyShare || 0,
-        description: projection.description || '',
+        artistId: projection.artistId,
+        catalogId: projection.catalogId,
+        numberOfTracks: projection.numberOfTracks,
+        period: projection.period,
+        dailyPlaysPerTrack: projection.dailyPlaysPerTrack,
+        dailyPlaysPerCatalog: projection.dailyPlaysPerCatalog,
+        totalPlays: projection.totalPlays,
+        averageValue: projection.averageValue,
+        participationPercentage: projection.participationPercentage,
+        artistPercentage: projection.artistPercentage,
+        companyPercentage: projection.companyPercentage,
+        proRata: projection.proRata,
+        profitability: projection.profitability,
       });
+      setSelectedArtistId(projection.artistId);
     }
   }, [projection]);
+
+  const handleArtistChange = (artistId: string) => {
+    setSelectedArtistId(artistId);
+    setFormData((prev) => ({
+      ...prev,
+      artistId,
+      catalogId: '',
+    }));
+  };
+
+  const filteredCatalogs = catalogs.filter(
+    (c) => c.artistId === selectedArtistId
+  );
 
   const handleInputChange = (
     field: keyof typeof formData,
@@ -77,7 +94,7 @@ const ConcertProjectionForm: React.FC<ConcertProjectionFormProps> = ({
     onSubmit(formData);
   };
 
-  if (artistsLoading) {
+  if (artistsLoading || catalogsLoading) {
     return (
       <div className="flex justify-center p-4">
         <Loader2 className="h-6 w-6 animate-spin text-purple-600" />
@@ -88,48 +105,13 @@ const ConcertProjectionForm: React.FC<ConcertProjectionFormProps> = ({
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="grid gap-4 md:grid-cols-2">
-        {/* Title field */}
-        <div className="md:col-span-2">
-          <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
-            Title
-          </label>
-          <input
-            type="text"
-            value={formData.title}
-            onChange={(e) => handleInputChange('title', e.target.value)}
-            className="mt-1 block w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500 dark:border-slate-600 dark:bg-slate-700 dark:text-white"
-            required
-          />
-        </div>
-
-        {/* Year field */}
-        <div>
-          <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
-            Year
-          </label>
-          <input
-            type="number"
-            min={new Date().getFullYear()}
-            value={formData.year}
-            onChange={(e) =>
-              handleInputChange(
-                'year',
-                parseInt(e.target.value) || new Date().getFullYear()
-              )
-            }
-            className="mt-1 block w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500 dark:border-slate-600 dark:bg-slate-700 dark:text-white"
-            required
-          />
-        </div>
-
-        {/* Artist field */}
         <div>
           <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
             Artist
           </label>
           <select
-            value={formData.artistId}
-            onChange={(e) => handleInputChange('artistId', e.target.value)}
+            value={selectedArtistId}
+            onChange={(e) => handleArtistChange(e.target.value)}
             className="mt-1 block w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500 dark:border-slate-600 dark:bg-slate-700 dark:text-white"
             required
           >
@@ -142,57 +124,96 @@ const ConcertProjectionForm: React.FC<ConcertProjectionFormProps> = ({
           </select>
         </div>
 
-        {/* Shows per Month field */}
         <div>
           <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
-            Shows per Month
+            Catalog
           </label>
-          <input
-            type="number"
-            min="0"
-            value={formData.showsPerMonth}
-            onChange={(e) =>
-              handleInputChange('showsPerMonth', parseInt(e.target.value) || 0)
-            }
+          <select
+            value={formData.catalogId}
+            onChange={(e) => handleInputChange('catalogId', e.target.value)}
             className="mt-1 block w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500 dark:border-slate-600 dark:bg-slate-700 dark:text-white"
             required
-          />
+          >
+            <option value="">Select a catalog</option>
+            {filteredCatalogs.map((catalog) => (
+              <option key={catalog.id} value={catalog.id}>
+                {artists.find((a) => a.id === catalog.artistId)?.name}'s x{' '}
+                {distributors.find((d) => d.id === catalog.distributorId)?.name}
+                's Catalog
+              </option>
+            ))}
+          </select>
         </div>
 
-        {/* Period field */}
         <div>
           <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
-            Period (months)
+            Number of Tracks
           </label>
           <input
             type="number"
             min="1"
-            max="12"
-            value={formData.period}
+            value={formData.numberOfTracks}
             onChange={(e) =>
-              handleInputChange('period', parseInt(e.target.value) || 12)
+              handleInputChange('numberOfTracks', parseInt(e.target.value) || 0)
             }
             className="mt-1 block w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500 dark:border-slate-600 dark:bg-slate-700 dark:text-white"
             required
           />
         </div>
 
-        {/* Average Ticket Value field */}
         <div>
           <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
-            Average Ticket Value
+            Period (Days)
+          </label>
+          <input
+            type="number"
+            min="1"
+            value={formData.period}
+            onChange={(e) =>
+              handleInputChange('period', parseInt(e.target.value) || 0)
+            }
+            className="mt-1 block w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500 dark:border-slate-600 dark:bg-slate-700 dark:text-white"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
+            Daily Plays per Track
+          </label>
+          <input
+            type="number"
+            min="0"
+            value={formData.dailyPlaysPerTrack}
+            onChange={(e) =>
+              handleInputChange(
+                'dailyPlaysPerTrack',
+                parseInt(e.target.value) || 0
+              )
+            }
+            className="mt-1 block w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500 dark:border-slate-600 dark:bg-slate-700 dark:text-white"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
+            Average Value
           </label>
           <div className="relative mt-1 rounded-md shadow-sm">
             <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-              <span className="text-slate-500 dark:text-slate-400">$</span>
+              <span className="text-slate-500 dark:text-slate-400 sm:text-sm">
+                $
+              </span>
             </div>
             <input
               type="number"
               min="0"
-              value={formData.averageTicketValue}
+              step="0.01"
+              value={formData.averageValue}
               onChange={(e) =>
                 handleInputChange(
-                  'averageTicketValue',
+                  'averageValue',
                   parseFloat(e.target.value) || 0
                 )
               }
@@ -202,10 +223,9 @@ const ConcertProjectionForm: React.FC<ConcertProjectionFormProps> = ({
           </div>
         </div>
 
-        {/* Crew Percentage field */}
         <div>
           <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
-            Crew Percentage
+            Participation Percentage
           </label>
           <div className="relative mt-1 rounded-md shadow-sm">
             <input
@@ -213,10 +233,10 @@ const ConcertProjectionForm: React.FC<ConcertProjectionFormProps> = ({
               min="0"
               max="100"
               step="0.5"
-              value={formData.crewPercentage}
+              value={formData.participationPercentage}
               onChange={(e) =>
                 handleInputChange(
-                  'crewPercentage',
+                  'participationPercentage',
                   parseFloat(e.target.value) || 0
                 )
               }
@@ -224,12 +244,13 @@ const ConcertProjectionForm: React.FC<ConcertProjectionFormProps> = ({
               required
             />
             <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-              <span className="text-slate-500 dark:text-slate-400">%</span>
+              <span className="text-slate-500 dark:text-slate-400 sm:text-sm">
+                %
+              </span>
             </div>
           </div>
         </div>
 
-        {/* Artist Percentage field */}
         <div>
           <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
             Artist Percentage
@@ -251,12 +272,13 @@ const ConcertProjectionForm: React.FC<ConcertProjectionFormProps> = ({
               required
             />
             <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-              <span className="text-slate-500 dark:text-slate-400">%</span>
+              <span className="text-slate-500 dark:text-slate-400 sm:text-sm">
+                %
+              </span>
             </div>
           </div>
         </div>
 
-        {/* Company Percentage field */}
         <div>
           <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
             Company Percentage
@@ -277,22 +299,11 @@ const ConcertProjectionForm: React.FC<ConcertProjectionFormProps> = ({
               className="block w-full rounded-md border border-slate-300 bg-slate-50 pr-12 py-2 text-sm text-slate-500 dark:border-slate-600 dark:bg-slate-700/50 dark:text-slate-400"
             />
             <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-              <span className="text-slate-500 dark:text-slate-400">%</span>
+              <span className="text-slate-500 dark:text-slate-400 sm:text-sm">
+                %
+              </span>
             </div>
           </div>
-        </div>
-
-        {/* Description field */}
-        <div className="md:col-span-2">
-          <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
-            Description
-          </label>
-          <textarea
-            value={formData.description}
-            onChange={(e) => handleInputChange('description', e.target.value)}
-            rows={3}
-            className="mt-1 block w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500 dark:border-slate-600 dark:bg-slate-700 dark:text-white"
-          />
         </div>
       </div>
 
@@ -304,4 +315,4 @@ const ConcertProjectionForm: React.FC<ConcertProjectionFormProps> = ({
   );
 };
 
-export default ConcertProjectionForm;
+export default CatalogProjectionForm;
