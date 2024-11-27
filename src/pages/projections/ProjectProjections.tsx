@@ -95,9 +95,11 @@ const ProjectProjections = () => {
     const proRataUSD =
       distributorProfit * ((data.companyPercentage || 0) / 100);
     const proRataBRL = proRataUSD * 5.5;
-    const project = projects.find((p) => p.id === data.projectId);
-    const projectBudget = project?.budget || 0;
-    const digitalProfitability = proRataBRL - projectBudget;
+    const budget =
+      data?.proRataBRL && data?.budgetPercentage
+        ? (data?.proRataBRL * data?.budgetPercentage) / 100
+        : 0;
+    const digitalProfitability = proRataBRL - budget;
 
     return {
       ...data,
@@ -109,7 +111,7 @@ const ProjectProjections = () => {
       proRataUSD,
       proRataBRL,
       netRevenue12Months: proRataBRL,
-      projectBudget,
+      budget,
       digitalProfitability,
     };
   };

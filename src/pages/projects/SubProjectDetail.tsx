@@ -16,6 +16,7 @@ import SubProjectForm from './SubProjectForm';
 import SubProjectItemForm from './SubProjectItemForm';
 import Card from '../../components/Card';
 import ActionButton from '../../components/ActionButton';
+import formatCurrency from '../../helpers/formatCurrency';
 
 const SubProjectDetail = () => {
   const { id } = useParams();
@@ -102,7 +103,10 @@ const SubProjectDetail = () => {
         }
       } else if (modalType === 'subproject' && subProject) {
         // Preserve the current cost when updating subproject
-        await updateSubProject(subProject.id, { ...data, cost: subProject.cost });
+        await updateSubProject(subProject.id, {
+          ...data,
+          cost: subProject.cost,
+        });
       }
       setIsModalOpen(false);
     } catch (error) {
@@ -156,14 +160,16 @@ const SubProjectDetail = () => {
               Total Cost (from Items)
             </p>
             <p className="mt-1 font-medium">
-              ${subProject.cost?.toLocaleString()}
+              {formatCurrency(subProject.cost)}
             </p>
           </div>
           {subProject.budget && (
             <div>
-              <p className="text-sm text-slate-600 dark:text-slate-400">Budget</p>
+              <p className="text-sm text-slate-600 dark:text-slate-400">
+                Budget
+              </p>
               <p className="mt-1 font-medium">
-                ${subProject.budget?.toLocaleString()}
+                {formatCurrency(subProject.budget)}
               </p>
             </div>
           )}
@@ -183,14 +189,14 @@ const SubProjectDetail = () => {
         <div className="flex items-center justify-between">
           <h2 className="flex items-center text-xl font-semibold">
             <DollarSign className="mr-2 h-5 w-5 text-purple-600" />
-            Items
+            Custo
           </h2>
           <button
             onClick={handleAddItem}
             className="flex items-center rounded-lg bg-purple-900 px-3 py-2 text-sm font-medium text-white hover:bg-purple-800"
           >
             <Plus className="mr-1 h-4 w-4" />
-            Add Item
+            Add Custo
           </button>
         </div>
         <div className="mt-4 divide-y divide-slate-100 dark:divide-slate-700">
@@ -200,7 +206,7 @@ const SubProjectDetail = () => {
                 <div>
                   <h3 className="font-medium">{item.title}</h3>
                   <p className="text-sm text-slate-600 dark:text-slate-400">
-                    Cost: ${item.cost?.toLocaleString()}
+                    Custo: {formatCurrency(item.cost)}
                   </p>
                   {item.description && (
                     <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">

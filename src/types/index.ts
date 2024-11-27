@@ -1,4 +1,4 @@
-import { ProjectTypeEnum } from '../enums/ProjectTypeEnum';
+import { ProjectSubTypeEnum, ProjectTypeEnum } from '../enums/ProjectTypeEnum';
 
 export interface User {
   id: string;
@@ -30,9 +30,9 @@ export interface Project {
   title: string;
   artistId: string;
   type: ProjectTypeEnum;
+  subtType: ProjectSubTypeEnum;
   releaseDate: string;
   description?: string;
-  budget?: number;
   cost?: number;
   trackIds: string[];
 }
@@ -107,6 +107,8 @@ export interface ProjectProjection {
   participationPercentage: number;
   artistPercentage: number;
   companyPercentage: number;
+  budgetPercentage: number;
+  budget: number;
   proRataUSD: number;
   proRataBRL: number;
   netRevenue12Months: number;

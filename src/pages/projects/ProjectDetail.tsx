@@ -10,7 +10,7 @@ import {
   Eye,
   Music,
 } from 'lucide-react';
-import { Project, SubProject, Track } from '../../types';
+import { Project, ProjectProjection, SubProject, Track } from '../../types';
 import { useProjects } from '../../hooks/useProjects';
 import { useArtists } from '../../hooks/useArtists';
 import { useSubProjects } from '../../hooks/useSubProjects';
@@ -21,12 +21,15 @@ import { useTracks } from '../../hooks/useTracks';
 import ProjectTrackForm from './ProjectTrackForm';
 import Card from '../../components/Card';
 import ActionButton from '../../components/ActionButton';
+import { useProjectProjections } from '../../hooks/useProjectProjections';
+import formatCurrency from '../../helpers/formatCurrency';
 
 const ProjectDetail = () => {
   const { id } = useParams();
   const { projects, updateProject, isLoading: projectsLoading } = useProjects();
   const { artists, isLoading: artistsLoading } = useArtists();
   const { tracks, isLoading: tracksLoading } = useTracks();
+  const { projectProjections } = useProjectProjections();
   const {
     subProjects,
     createSubProject,
@@ -37,6 +40,8 @@ const ProjectDetail = () => {
 
   const navigate = useNavigate();
   const [project, setProject] = useState<Project | null>(null);
+  const [projections, setProjections] = useState<ProjectProjection[]>([]);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedTrack, setSelectedTrack] = useState<Track | null>(null);
   const [selectedSubProject, setSelectedSubProject] =
@@ -70,6 +75,11 @@ const ProjectDetail = () => {
       if (projectsLoading || artistsLoading) return;
 
       const currentProject = projects.find((p) => p.id === id);
+      const projectProjection = projectProjections.filter(
+        (it) => it.projectId === project?.id
+      );
+      console.log(projections, projectProjection);
+      setProjections(projectProjection || []);
       setProject(currentProject || null);
     };
 
@@ -108,9 +118,23 @@ const ProjectDetail = () => {
     setIsModalOpen(true);
   };
 
-  const handleDeleteTrack = async (track: Track) => {
-    if (window.confirm('Are you sure you want to delete this track?')) {
-      await deleteTrack(track.id);
+  const handleDeleteTrack = async (trackId: string) => {
+    if (
+      !project ||
+      !window.confirm('Tem certeza que deseja remover esta música do catálogo?')
+    ) {
+      return;
+    }
+
+    try {
+      const updatedTrackIds = project.trackIds.filter((id) => id !== trackId);
+
+      await updateProject(project.id, {
+        ...project,
+        trackIds: updatedTrackIds,
+      });
+    } catch (error) {
+      console.error('Falha ao remover música:', error);
     }
   };
 
@@ -205,18 +229,25 @@ const ProjectDetail = () => {
               {new Date(project.releaseDate).toLocaleDateString()}
             </p>
           </div>
-          <div>
-            <p className="text-sm text-slate-600 dark:text-slate-400">Budget</p>
-            <p className="mt-1 font-medium">
-              ${project.budget?.toLocaleString()}
-            </p>
-          </div>
+          {projections.length > 0 && (
+            <div>
+              <p className="text-sm text-slate-600 dark:text-slate-400">
+                Budget
+              </p>
+              {projections.map((pr) => (
+                <p className="mt-1 font-medium">
+                  {pr.year} - {formatCurrency(pr.budget)}
+                </p>
+              ))}
+            </div>
+          )}
+
           <div>
             <p className="text-sm text-slate-600 dark:text-slate-400">
               Total Cost (from Sub-Projects)
             </p>
             <p className="mt-1 font-medium">
-              ${project.cost?.toLocaleString()}
+              {formatCurrency(project.cost || 0)}
             </p>
           </div>
         </div>
@@ -252,7 +283,10 @@ const ProjectDetail = () => {
                 <div>
                   <h3 className="font-medium">{subProject.title}</h3>
                   <p className="text-sm text-slate-600 dark:text-slate-400">
-                    Cost: ${subProject.cost?.toLocaleString()}
+                    Budget: {formatCurrency(subProject.budget || 0)}
+                  </p>
+                  <p className="text-sm text-slate-600 dark:text-slate-400">
+                    Custo: {formatCurrency(subProject.cost)}
                   </p>
                   {subProject.description && (
                     <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
@@ -322,7 +356,7 @@ const ProjectDetail = () => {
                 </div>
                 <div className="flex items-center gap-2">
                   <button
-                    onClick={() => handleDeleteTrack(track)}
+                    onClick={() => handleDeleteTrack(track.id)}
                     className="rounded p-1 text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20"
                     title="Delete Track"
                   >

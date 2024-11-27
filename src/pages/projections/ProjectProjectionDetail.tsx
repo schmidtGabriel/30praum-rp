@@ -81,7 +81,8 @@ const ProjectProjectionDetail = () => {
       const proRataUSD = distributorProfit * (data.companyPercentage / 100);
       const proRataBRL = proRataUSD * 5;
       const netRevenue12Months = proRataBRL;
-      const digitalProfitability = netRevenue12Months - (project?.budget || 0);
+      const budget = (proRataBRL * data.budgetPercentage) / 100 || 0;
+      const digitalProfitability = netRevenue12Months - budget;
 
       const calculatedData = {
         ...data,
@@ -92,7 +93,7 @@ const ProjectProjectionDetail = () => {
         proRataUSD,
         proRataBRL,
         netRevenue12Months,
-        projectBudget: project?.budget || 0,
+        budget,
         digitalProfitability,
       };
 

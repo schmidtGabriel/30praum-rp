@@ -38,6 +38,8 @@ const ProjectProjectionForm: React.FC<ProjectProjectionFormProps> = ({
     participationPercentage: 20,
     artistPercentage: 40,
     companyPercentage: 40,
+    budgetPercentage: 0,
+    budget: 0,
     proRataUSD: 0,
     proRataBRL: 0,
     netRevenue12Months: 0,
@@ -63,6 +65,8 @@ const ProjectProjectionForm: React.FC<ProjectProjectionFormProps> = ({
         participationPercentage: projection.participationPercentage,
         artistPercentage: projection.artistPercentage,
         companyPercentage: projection.companyPercentage,
+        budgetPercentage: projection.budgetPercentage,
+        budget: projection.budget,
         proRataUSD: projection.proRataUSD,
         proRataBRL: projection.proRataBRL,
         netRevenue12Months: projection.netRevenue12Months,
@@ -256,7 +260,7 @@ const ProjectProjectionForm: React.FC<ProjectProjectionFormProps> = ({
               className="block w-full rounded-md border border-slate-300 pl-4 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500 dark:border-slate-600 dark:bg-slate-700 dark:text-white"
               required
             />
-            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-5">
               <span className="text-slate-500 dark:text-slate-400">%</span>
             </div>
           </div>
@@ -283,7 +287,7 @@ const ProjectProjectionForm: React.FC<ProjectProjectionFormProps> = ({
               className="block w-full rounded-md border border-slate-300 pl-4 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500 dark:border-slate-600 dark:bg-slate-700 dark:text-white"
               required
             />
-            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-5">
               <span className="text-slate-500 dark:text-slate-400">%</span>
             </div>
           </div>
@@ -309,7 +313,33 @@ const ProjectProjectionForm: React.FC<ProjectProjectionFormProps> = ({
               }
               className="block w-full rounded-md border border-slate-300 bg-slate-50 pl-4 py-2 text-sm text-slate-500 dark:border-slate-600 dark:bg-slate-700/50 dark:text-slate-400"
             />
-            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-5">
+              <span className="text-slate-500 dark:text-slate-400">%</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Company Percentage field */}
+        <div>
+          <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
+            Porcentagem do Budget
+          </label>
+          <div className="relative mt-1 rounded-md shadow-sm">
+            <input
+              type="number"
+              min="0"
+              max="100"
+              step="0.5"
+              value={formData.budgetPercentage}
+              onChange={(e) =>
+                handleInputChange(
+                  'budgetPercentage',
+                  parseFloat(e.target.value)
+                )
+              }
+              className="block w-full rounded-md border border-slate-300 bg-slate-50 pl-4 py-2 text-sm text-slate-500 dark:border-slate-600 dark:bg-slate-700/50 dark:text-slate-400"
+            />
+            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-5">
               <span className="text-slate-500 dark:text-slate-400">%</span>
             </div>
           </div>
