@@ -1,28 +1,28 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
 import {
   ArrowLeft,
-  Plus,
-  Edit,
-  Trash2,
-  Loader2,
   DollarSign,
+  Edit,
   Eye,
+  Loader2,
   Music,
-} from 'lucide-react';
-import { Project, ProjectProjection, SubProject, Track } from '../../types';
-import { useProjects } from '../../hooks/useProjects';
-import { useArtists } from '../../hooks/useArtists';
-import { useSubProjects } from '../../hooks/useSubProjects';
-import Modal from '../../components/Modal';
-import ProjectForm from './ProjectForm';
-import SubProjectForm from './SubProjectForm';
-import { useTracks } from '../../hooks/useTracks';
-import ProjectTrackForm from './ProjectTrackForm';
-import Card from '../../components/Card';
-import ActionButton from '../../components/ActionButton';
-import { useProjectProjections } from '../../hooks/useProjectProjections';
-import formatCurrency from '../../helpers/formatCurrency';
+  Plus,
+  Trash2,
+} from "lucide-react";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import ActionButton from "../../components/ActionButton";
+import Card from "../../components/Card";
+import Modal from "../../components/Modal";
+import formatCurrency from "../../helpers/formatCurrency";
+import { useArtists } from "../../hooks/useArtists";
+import { useProjectProjections } from "../../hooks/useProjectProjections";
+import { useProjects } from "../../hooks/useProjects";
+import { useSubProjects } from "../../hooks/useSubProjects";
+import { useTracks } from "../../hooks/useTracks";
+import { Project, ProjectProjection, SubProject, Track } from "../../types";
+import ProjectForm from "./ProjectForm";
+import ProjectTrackForm from "./ProjectTrackForm";
+import SubProjectForm from "./SubProjectForm";
 
 const ProjectDetail = () => {
   const { id } = useParams();
@@ -47,8 +47,8 @@ const ProjectDetail = () => {
   const [selectedSubProject, setSelectedSubProject] =
     useState<SubProject | null>(null);
   const [modalType, setModalType] = useState<
-    'track' | 'subproject' | 'project'
-  >('track');
+    "track" | "subproject" | "project"
+  >("track");
 
   // Calculate total cost from subprojects
   const calculateTotalCost = (projectId: string) => {
@@ -96,32 +96,32 @@ const ProjectDetail = () => {
   );
 
   const handleEditProject = () => {
-    setModalType('project');
+    setModalType("project");
     setIsModalOpen(true);
   };
 
   const handleAddTrack = () => {
     setSelectedTrack(null);
-    setModalType('track');
+    setModalType("track");
     setIsModalOpen(true);
   };
 
   const handleAddSubProject = () => {
     setSelectedSubProject(null);
-    setModalType('subproject');
+    setModalType("subproject");
     setIsModalOpen(true);
   };
 
   const handleEditSubProject = (subProject: SubProject) => {
     setSelectedSubProject(subProject);
-    setModalType('subproject');
+    setModalType("subproject");
     setIsModalOpen(true);
   };
 
   const handleDeleteTrack = async (trackId: string) => {
     if (
       !project ||
-      !window.confirm('Tem certeza que deseja remover esta música do catálogo?')
+      !window.confirm("Tem certeza que deseja remover esta música do catálogo?")
     ) {
       return;
     }
@@ -134,12 +134,12 @@ const ProjectDetail = () => {
         trackIds: updatedTrackIds,
       });
     } catch (error) {
-      console.error('Falha ao remover música:', error);
+      console.error("Falha ao remover música:", error);
     }
   };
 
   const handleDeleteSubProject = async (subProject: SubProject) => {
-    if (window.confirm('Are you sure you want to delete this sub-project?')) {
+    if (window.confirm("Are you sure you want to delete this sub-project?")) {
       await deleteSubProject(subProject.id);
     }
   };
@@ -148,7 +148,7 @@ const ProjectDetail = () => {
     try {
       if (!project) return;
 
-      if (modalType === 'track') {
+      if (modalType === "track") {
         const trackId = data.trackId;
         const updatedTrackIds = [...(project?.trackIds || []), trackId];
 
@@ -156,7 +156,7 @@ const ProjectDetail = () => {
           ...project,
           trackIds: updatedTrackIds,
         });
-      } else if (modalType === 'project' && project) {
+      } else if (modalType === "project" && project) {
         // Preserve the current cost when updating project
         await updateProject(project.id, { ...data, cost: project.cost });
       } else {
@@ -168,7 +168,7 @@ const ProjectDetail = () => {
       }
       setIsModalOpen(false);
     } catch (error) {
-      console.error('Failed to save:', error);
+      console.error("Failed to save:", error);
     }
   };
 
@@ -226,7 +226,7 @@ const ProjectDetail = () => {
               Release Date
             </p>
             <p className="mt-1 font-medium">
-              {new Date(project.releaseDate).toLocaleDateString()}
+              {new Date(project.releaseDate).toLocaleDateString("pt-BR")}
             </p>
           </div>
           {projections.length > 0 && (
@@ -350,7 +350,7 @@ const ProjectDetail = () => {
                 <div>
                   <h3 className="font-medium">{track.title}</h3>
                   <p className="text-sm text-slate-600 dark:text-slate-400">
-                    Duration: {track.duration} • Released:{' '}
+                    Duration: {track.duration} • Released:{" "}
                     {new Date(track.releaseDate).toLocaleDateString()}
                   </p>
                 </div>
@@ -379,20 +379,20 @@ const ProjectDetail = () => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         title={
-          modalType === 'track'
-            ? `${selectedTrack ? 'Edit' : 'Add'} Track`
-            : modalType === 'project'
-            ? 'Edit Project'
-            : `${selectedSubProject ? 'Edit' : 'Add'} Sub-Project`
+          modalType === "track"
+            ? `${selectedTrack ? "Edit" : "Add"} Track`
+            : modalType === "project"
+            ? "Edit Project"
+            : `${selectedSubProject ? "Edit" : "Add"} Sub-Project`
         }
       >
-        {modalType === 'track' ? (
+        {modalType === "track" ? (
           <ProjectTrackForm
             availableTracks={availableTracks}
             onSubmit={handleSubmit}
             onCancel={() => setIsModalOpen(false)}
           />
-        ) : modalType === 'project' ? (
+        ) : modalType === "project" ? (
           <ProjectForm
             project={project}
             onSubmit={handleSubmit}
