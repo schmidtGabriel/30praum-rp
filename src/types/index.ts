@@ -136,3 +136,33 @@ export interface ConcertProjection {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface PaymentRequest {
+  id: string;
+  beneficiaryId: string;
+  amount: number;
+  description: string;
+  paymentDate: string;
+  competenceDate: string;
+  artistId: string;
+  projectId: string;
+  subProjectItemId: string;
+  createdAt: string;
+  updatedAt: string;
+  status: PaymentRequestStatus;
+  justification?: string;
+}
+
+export type PaymentRequestStatus = 'pending' | 'approved' | 'rejected' | 'paid';
+
+export interface Beneficiary {
+  id: string;
+  fullName: string;
+  document: string;
+  companyName?: string;
+  pixKey: string;
+  phone: string;
+  description?: string;
+  createdAt: string;
+  updatedAt: string;
+}

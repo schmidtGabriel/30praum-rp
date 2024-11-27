@@ -35,13 +35,15 @@ const DataTable: React.FC<DataTableProps> = ({
         <h2 className="text-xl font-semibold text-slate-800 dark:text-white">
           {title}
         </h2>
-        <button
-          onClick={onAdd}
-          className="inline-flex items-center justify-center rounded-lg bg-purple-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 dark:bg-purple-800 dark:hover:bg-purple-700 dark:focus:ring-offset-slate-800"
-        >
-          <Plus className="h-4 w-4" />
-          <span className="ml-2">Novo</span>
-        </button>
+        {onAdd && (
+          <button
+            onClick={onAdd}
+            className="inline-flex items-center justify-center rounded-lg bg-purple-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 dark:bg-purple-800 dark:hover:bg-purple-700 dark:focus:ring-offset-slate-800"
+          >
+            <Plus className="h-4 w-4" />
+            <span className="ml-2">Novo</span>
+          </button>
+        )}
       </div>
       <div className="overflow-x-auto">
         <table className="w-full table-auto border-collapse">

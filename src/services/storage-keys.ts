@@ -1,0 +1,15 @@
+export const STORAGE_KEYS = {
+  ARTISTS: 'artists',
+  CATALOGS: 'catalogs',
+  USERS: 'users',
+  TRACKS: 'tracks',
+  PROJECTS: 'projects',
+  DISTRIBUTORS: 'distributors',
+  SUBPROJECTS: 'subprojects',
+  SUBPROJECT_ITEMS: 'subProjectItems',
+  CATALOG_PROJECTIONS: 'catalogProjections',
+  PROJECT_PROJECTIONS: 'projectProjections',
+  CONCERT_PROJECTIONS: 'concertProjections',
+  BENEFICIARIES: 'beneficiaries',
+  PAYMENT_REQUESTS: 'payment_requests',
+} as const;

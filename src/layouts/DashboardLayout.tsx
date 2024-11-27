@@ -18,6 +18,9 @@ import {
   LogOut,
   Sun,
   Moon,
+  ClipboardList,
+  InboxIcon,
+  BanknoteIcon,
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
@@ -76,6 +79,13 @@ const DashboardLayout = () => {
         { icon: Disc3, text: 'Catálogos', path: '/catalogs' },
         { icon: Music, text: 'Faixas', path: '/tracks' },
         { icon: Percent, text: 'Distribuidoras', path: '/distributors' },
+      ],
+    },
+    {
+      title: 'Solicitações',
+      items: [
+        { icon: InboxIcon, text: 'Central de Solicitações', path: '/requests' },
+        { icon: BanknoteIcon, text: 'Solicitar Pagamento', path: '/requests/payment' },
       ],
     },
   ];

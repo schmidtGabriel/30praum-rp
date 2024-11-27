@@ -19,7 +19,7 @@ const SubProjectItemForm: React.FC<SubProjectItemFormProps> = ({
   const [formData, setFormData] = useState({
     title: '',
     description: '',
-    cost: 0,
+    cost: '0',
     subprojectId: subprojectId,
   });
 
@@ -28,14 +28,14 @@ const SubProjectItemForm: React.FC<SubProjectItemFormProps> = ({
       setFormData({
         title: item.title,
         description: item.description,
-        cost: item.cost,
+        cost: item.cost.toString(),
         subprojectId: item.subprojectId,
       });
     } else {
       setFormData({
         title: '',
         description: '',
-        cost: 0,
+        cost: '0',
         subprojectId: subprojectId,
       });
     }
@@ -43,7 +43,10 @@ const SubProjectItemForm: React.FC<SubProjectItemFormProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(formData);
+    onSubmit({
+      ...formData,
+      cost: parseFloat(formData.cost) || 0,
+    });
   };
 
   return (
@@ -88,9 +91,7 @@ const SubProjectItemForm: React.FC<SubProjectItemFormProps> = ({
           <input
             type="number"
             value={formData.cost}
-            onChange={(e) =>
-              setFormData({ ...formData, cost: parseFloat(e.target.value) })
-            }
+            onChange={(e) => setFormData({ ...formData, cost: e.target.value })}
             min="0"
             step="0.01"
             className="block w-full rounded-md border border-slate-300 pl-7 pr-12 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500 dark:border-slate-600 dark:bg-slate-700 dark:text-white"

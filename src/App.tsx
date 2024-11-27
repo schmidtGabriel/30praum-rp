@@ -24,6 +24,8 @@ import SubProjectDetail from './pages/projects/SubProjectDetail';
 import Distributors from './pages/distributors/Distributors';
 import ProtectedRoute from './components/ProtectedRoute';
 import Tracks from './pages/tracks/Tracks';
+import PaymentRequestCreate from './pages/requests/PaymentRequestCreate';
+import PaymentRequestList from './pages/requests/PaymentRequestList';
 
 export default function App() {
   return (
@@ -72,6 +74,12 @@ export default function App() {
                 />
                 <Route path="/distributors" element={<Distributors />} />
                 <Route path="/users" element={<Users />} />
+                {/* Payment Request Routes */}
+                <Route path="/requests" element={<PaymentRequestList />} />
+                <Route
+                  path="/requests/payment"
+                  element={<PaymentRequestCreate />}
+                />
               </Route>
             </Route>
             <Route element={<AuthLayout />}>
