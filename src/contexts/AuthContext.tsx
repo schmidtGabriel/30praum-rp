@@ -1,12 +1,12 @@
-import React, {
+import {
   createContext,
-  useContext,
-  useState,
-  useEffect,
   ReactNode,
-} from 'react';
-import { User } from '../types';
-import { usersService } from '../services/api';
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+import { usersService } from "../services/api";
+import { User } from "../types";
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -20,18 +20,17 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 }
 
-const AUTH_STORAGE_KEY = 'auth_user';
+const AUTH_STORAGE_KEY = "auth_user";
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-
   // Load authentication state from localStorage on mount
   useEffect(() => {
     const initializeAuth = async () => {
@@ -45,8 +44,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             (u) =>
               u.id === user.id &&
               u.email === user.email &&
-              u.status === 'active' &&
-              u.role === 'admin'
+              u.status === "active" &&
+              u.role === "admin"
           );
 
           if (existingUser) {
@@ -58,7 +57,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           }
         }
       } catch (error) {
-        console.error('Error loading auth state:', error);
+        console.error("Error loading auth state:", error);
         localStorage.removeItem(AUTH_STORAGE_KEY);
       } finally {
         setIsLoading(false);
@@ -72,21 +71,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const users = await usersService.list();
       const user = users.find((u) => {
-        if (email === 'admin@30praum.com') {
+        if (email === "admin@30praum.com") {
           return (
-            u.email === email && u.role === 'admin' && u.status === 'active'
+            u.email === email && u.role === "admin" && u.status === "active"
           );
         }
         return (
           u.email === email &&
           u.password === password &&
-          u.role === 'admin' &&
-          u.status === 'active'
+          u.role === "admin" &&
+          u.status === "active"
         );
       });
 
       if (!user) {
-        throw new Error('Invalid credentials or insufficient permissions');
+        throw new Error("Invalid credentials or insufficient permissions");
       }
 
       // Update last login
@@ -104,7 +103,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setCurrentUser(userWithoutPassword);
       setIsAuthenticated(true);
     } catch (error) {
-      throw new Error('Authentication failed');
+      throw new Error("Authentication failed");
     }
   };
 
