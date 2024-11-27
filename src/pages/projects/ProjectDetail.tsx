@@ -349,10 +349,6 @@ const ProjectDetail = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="font-medium">{track.title}</h3>
-                  <p className="text-sm text-slate-600 dark:text-slate-400">
-                    Duration: {track.duration} • Released:{" "}
-                    {new Date(track.releaseDate).toLocaleDateString()}
-                  </p>
                 </div>
                 <div className="flex items-center gap-2">
                   <button

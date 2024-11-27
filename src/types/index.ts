@@ -1,12 +1,12 @@
-import { ProjectSubTypeEnum, ProjectTypeEnum } from '../enums/ProjectTypeEnum';
+import { ProjectSubTypeEnum, ProjectTypeEnum } from "../enums/ProjectTypeEnum";
 
 export interface User {
   id: string;
   name: string;
   email: string;
   password?: string;
-  role: 'admin' | 'user';
-  status: 'active' | 'inactive';
+  role: "admin" | "user";
+  status: "active" | "inactive";
   lastLogin: string;
 }
 
@@ -21,7 +21,6 @@ export interface Track {
   title: string;
   artistId: string;
   releaseDate: string;
-  duration: string;
   expectationDailyPlays: number;
 }
 
@@ -155,7 +154,7 @@ export interface PaymentRequest {
   justification?: string;
 }
 
-export type PaymentRequestStatus = 'pending' | 'approved' | 'rejected' | 'paid';
+export type PaymentRequestStatus = "pending" | "approved" | "rejected" | "paid";
 
 export interface Beneficiary {
   id: string;

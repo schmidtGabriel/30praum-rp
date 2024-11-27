@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { SubProject } from '../../types';
-import SaveButton from '../../components/SaveButton';
-import CancelButton from '../../components/CancelButton';
+import React, { useEffect, useState } from "react";
+import CancelButton from "../../components/CancelButton";
+import SaveButton from "../../components/SaveButton";
+import { SubProject } from "../../types";
 
 interface SubProjectFormProps {
   subProject?: SubProject | null;
-  onSubmit: (data: Omit<SubProject, 'id'>) => void;
+  onSubmit: (data: Omit<SubProject, "id">) => void;
   onCancel: () => void;
   projectId: string;
 }
@@ -17,10 +17,10 @@ const SubProjectForm: React.FC<SubProjectFormProps> = ({
   projectId,
 }) => {
   const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    budget: '',
-    cost: '0',
+    title: "",
+    description: "",
+    budget: "",
+    cost: "0",
     projectId: projectId,
   });
 
@@ -28,17 +28,17 @@ const SubProjectForm: React.FC<SubProjectFormProps> = ({
     if (subProject) {
       setFormData({
         title: subProject.title,
-        description: subProject.description || '',
-        budget: subProject.budget?.toString() || '',
-        cost: subProject.cost?.toString() || '0',
+        description: subProject.description || "",
+        budget: subProject.budget?.toString() || "",
+        cost: subProject.cost?.toString() || "0",
         projectId: subProject.projectId,
       });
     } else {
       setFormData({
-        title: '',
-        description: '',
-        budget: '',
-        cost: '0',
+        title: "",
+        description: "",
+        budget: "",
+        cost: "0",
         projectId: projectId,
       });
     }
@@ -95,7 +95,9 @@ const SubProjectForm: React.FC<SubProjectFormProps> = ({
           <input
             type="number"
             value={formData.budget}
-            onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, budget: e.target.value })
+            }
             min="0"
             step="0.01"
             className="block w-full rounded-md border border-slate-300 pl-7 pr-12 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500 dark:border-slate-600 dark:bg-slate-700 dark:text-white"
@@ -103,7 +105,7 @@ const SubProjectForm: React.FC<SubProjectFormProps> = ({
         </div>
       </div>
 
-      <div>
+      {/* <div>
         <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
           Cost (Calculated from Items)
         </label>
@@ -123,7 +125,7 @@ const SubProjectForm: React.FC<SubProjectFormProps> = ({
         <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
           This value is automatically calculated from the sum of all items
         </p>
-      </div>
+      </div> */}
 
       <div className="flex justify-end gap-3">
         <CancelButton onClick={onCancel} />

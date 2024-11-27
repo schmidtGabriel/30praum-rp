@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { Track } from '../../types';
-import { useTracks } from '../../hooks/useTracks';
-import { useArtists } from '../../hooks/useArtists';
-import DataTable from '../../components/DataTable';
-import Modal from '../../components/Modal';
-import TrackForm from './TrackForm';
-import { Loader2 } from 'lucide-react';
+import { Loader2 } from "lucide-react";
+import { useState } from "react";
+import DataTable from "../../components/DataTable";
+import Modal from "../../components/Modal";
+import { useArtists } from "../../hooks/useArtists";
+import { useTracks } from "../../hooks/useTracks";
+import { Track } from "../../types";
+import TrackForm from "./TrackForm";
 
 const Tracks = () => {
   const {
@@ -21,18 +21,21 @@ const Tracks = () => {
   const [selectedTrack, setSelectedTrack] = useState<Track | null>(null);
 
   const columns = [
-    { key: 'title', label: 'Title' },
+    { key: "title", label: "Title" },
     {
-      key: 'artistId',
-      label: 'Artist',
+      key: "artistId",
+      label: "Artist",
       render: (value: string) =>
-        artists.find((a) => a.id === value)?.name || 'Unknown',
+        artists.find((a) => a.id === value)?.name || "Unknown",
     },
-    { key: 'releaseDate', label: 'Release Date' },
-    { key: 'duration', label: 'Duration' },
     {
-      key: 'expectationDailyPlays',
-      label: 'Expected Daily Plays',
+      key: "releaseDate",
+      label: "Release Date",
+      render: (value: string) => new Date(value).toLocaleDateString("pt-BR"),
+    },
+    {
+      key: "expectationDailyPlays",
+      label: "Expected Daily Plays",
       render: (value: number) => value.toLocaleString(),
     },
   ];
@@ -48,12 +51,12 @@ const Tracks = () => {
   };
 
   const handleDelete = async (track: Track) => {
-    if (window.confirm('Tem certeza que deseja deletar esse faixa?')) {
+    if (window.confirm("Tem certeza que deseja deletar esse faixa?")) {
       await deleteTrack(track.id);
     }
   };
 
-  const handleSubmit = async (data: Omit<Track, 'id'>) => {
+  const handleSubmit = async (data: Omit<Track, "id">) => {
     try {
       if (selectedTrack) {
         await updateTrack(selectedTrack.id, data);
@@ -62,7 +65,7 @@ const Tracks = () => {
       }
       setIsModalOpen(false);
     } catch (error) {
-      console.error('Failed to save track:', error);
+      console.error("Failed to save track:", error);
     }
   };
 
@@ -94,7 +97,7 @@ const Tracks = () => {
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        title={selectedTrack ? 'Edit Track' : 'Add Track'}
+        title={selectedTrack ? "Edit Track" : "Add Track"}
       >
         <TrackForm
           track={selectedTrack}
